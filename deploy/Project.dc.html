@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0a0c; color: #e8e6e1; font-family: 'Courier Prime', 'Courier New', monospace; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #e04a2e; }
+  .chip { display: inline-block; padding: 6px 12px; border: 1px solid #1a1a1e; font-size: 12px; font-style: italic; }
+  .nav-item { position: relative; display: block; width: 100%; transition: color 0.15s ease, padding 0.25s ease; }
+  .nav-item .lbl { position: relative; z-index: 1; display: inline-block; transition: color 0.15s ease, font-size 0.3s cubic-bezier(0.2,0.7,0.2,1); }
+  .nav-item .lbl::before, .nav-item .lbl::after { content: attr(data-txt); position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+  .nav-item:hover .lbl::before { color: #ff6a3d; opacity: 0.9; animation: glitchR 0.35s steps(2) 1, flickerIn 0.5s steps(4) 1; mix-blend-mode: screen; }
+  .nav-item:hover .lbl::after { color: #19c8ff; opacity: 0.7; animation: glitchB 0.35s steps(2) 1, flickerIn 0.5s steps(4) 1; mix-blend-mode: screen; }
+  .nav-item:hover .lbl { animation: flickerIn 0.45s steps(4) 1; color: #e04a2e; font-size: 22px; }
+  .nav-highlight { position: absolute; inset: 0; background: #e04a2e; opacity: 0; transform: scaleX(0.15); transform-origin: left; transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.2,0.7,0.2,1); z-index: 0; }
+  .nav-item:hover .nav-highlight { opacity: 0.16; transform: scaleX(1); }
+  @keyframes glitchR { 0%,100% { transform: translate(0,0); } 20% { transform: translate(2px,-1px); } 40% { transform: translate(-1px,1px); } 60% { transform: translate(1px,0); } }
+  @keyframes glitchB { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-2px,1px); } 40% { transform: translate(1px,-1px); } 60% { transform: translate(-1px,0); } }
+  @keyframes flickerIn { 0% { opacity: 0; } 20% { opacity: 1; } 30% { opacity: 0.2; } 45% { opacity: 1; } 55% { opacity: 0.4; } 70% { opacity: 1; } }
+</style>
+</helmet>
+<div style="display: flex; min-height: 100vh; background: #0a0a0c; position: relative;">
+
+  <sc-if value="{{ sidebarVisible }}" hint-placeholder-val="{{ false }}">
+    <aside onMouseEnter="{{ onSidebarEnter }}" onMouseLeave="{{ onSidebarLeave }}" style="width: {{ sidebarWidth }}px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0a0a0c; color: #e8e6e1; font-family: 'Courier Prime', 'Courier New', monospace; transition: width 0.45s cubic-bezier(0.2,0.7,0.2,1);">
+      <div style="width: 240px; height: 100%; padding: 48px 24px 32px; display: flex; flex-direction: column; align-items: center; opacity: {{ sidebarContentOpacity }}; transition: opacity 0.25s ease;">
+        <div onClick="{{ goHome }}" style="display: inline-block; background: #e04a2e; padding: 8px 16px 10px; margin-bottom: 96px; cursor: pointer;">
+          <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 22px; color: #ffffff; line-height: 1; letter-spacing: -0.01em;">wm.yen</div>
+        </div>
+        <nav style="display: flex; flex-direction: column; gap: 18px; align-items: flex-start; width: 100%;">
+          <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="4">
+            <a href="{{ item.href }}" class="nav-item" onClick="{{ item.onClick }}" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 15px; color: #e8e6e1; cursor: pointer; letter-spacing: 0; padding: 6px 8px;">
+              <span class="nav-highlight"></span>
+              <span class="lbl" data-txt="{{ item.labelLower }}">{{ item.labelLower }}</span>
+            </a>
+          </sc-for>
+        </nav>
+      </div>
+    </aside>
+  </sc-if>
+
+  <main style="flex: 1; min-width: 0;">
+  <sc-if value="{{ showBreadcrumb }}" hint-placeholder-val="{{ true }}">
+    <a href="Portfolio.dc.html" onClick="{{ goHome }}" style="position: fixed; top: 24px; left: 24px; font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; color: #6b6b70; letter-spacing: 0.05em; cursor: pointer;">← back to home</a>
+  </sc-if>
+
+  <div style="padding: 96px 24px 120px; text-align: center;">
+    <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+      <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 16px;">02 · projects</div>
+      <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.1em; margin-bottom: 8px;">{{ project.metaLine }}</div>
+      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 34px; margin: 0 0 20px; letter-spacing: -0.01em;">{{ project.titleLower }}</h1>
+      <p style="font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.65; color: #8a8a92; margin: 0 auto; max-width: 480px;">{{ project.desc }}</p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
+        <sc-for list="{{ project.stack }}" as="s" hint-placeholder-count="4">
+          <span class="chip">{{ s }}</span>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #1a1a1e; width: 100%;">
+        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 13px; line-height: 1.7; color: #cfcdc7; margin: 0 auto; max-width: 480px;">{{ project.moreNote }}</p>
+      </div>
+    </div>
+  </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { loaded: false, sidebarVisible: false, collapsed: false };
+  static PROJECTS = {
+    meridian: { titleLower: 'meridian', metaLine: '2026 · infrastructure · rust · tokio · postgres · grpc',
+      desc: 'a distributed job scheduler built for latency-critical workloads. handles 40k jobs/sec with sub-ms tail latency and zero-config deployment.',
+      stack: ['rust', 'tokio', 'postgres', 'grpc'] },
+    lantern: { titleLower: 'lantern', metaLine: '2025 · dev tools · go · ebpf · react',
+      desc: 'local-first observability. zero-config traces with sub-ms overhead.',
+      stack: ['go', 'ebpf', 'react'] },
+    halfstep: { titleLower: 'halfstep', metaLine: '2025 · open source · typescript · rollup',
+      desc: 'a tiny, type-checked query builder for typescript. loved by ~3k developers on github.',
+      stack: ['typescript', 'rollup'] },
+    cadence: { titleLower: 'cadence', metaLine: '2024 · internal · node · swift · kotlin',
+      desc: 'a design-system runtime shipping tokens as code across web, ios, and android in one build step.',
+      stack: ['node', 'swift', 'kotlin'] },
+  };
+  componentDidMount() {
+    requestAnimationFrame(() => setTimeout(() => this.setState({ loaded: true }), 30));
+    if (sessionStorage.getItem('sidebarOpen') === '1') {
+      sessionStorage.removeItem('sidebarOpen');
+      this.setState({ sidebarVisible: true, collapsed: false });
+    }
+  }
+  componentWillUnmount() {
+    clearTimeout(this._navTimer);
+    clearTimeout(this._reCollapseTimer);
+  }
+  goHome(e) {
+    if (e) e.preventDefault();
+    this.setState({ loaded: false });
+    clearTimeout(this._navTimer);
+    this._navTimer = setTimeout(() => { window.location.href = 'Portfolio.dc.html'; }, 360);
+  }
+  navigate(url) {
+    this.setState({ loaded: false });
+    clearTimeout(this._navTimer);
+    this._navTimer = setTimeout(() => { window.location.href = url; }, 360);
+  }
+  navigateWithSidebar(url) {
+    sessionStorage.setItem('sidebarOpen', '1');
+    this.navigate(url);
+  }
+  onSidebarEnter() {
+    if (this._locked) return;
+    clearTimeout(this._reCollapseTimer);
+    this.setState({ collapsed: false });
+  }
+  onSidebarLeave() {
+    if (this._locked) return;
+    this._reCollapseTimer = setTimeout(() => {
+      this._locked = true;
+      this.setState({ collapsed: true });
+    }, 500);
+  }
+  renderVals() {
+    const slug = new URLSearchParams(window.location.search).get('slug') || 'meridian';
+    const project = Component.PROJECTS[slug] || Component.PROJECTS.meridian;
+    const navigate = (url) => (e) => { if (e) e.preventDefault(); this.navigate(url); };
+    const navigateSidebar = (url) => (e) => { if (e) e.preventDefault(); this.navigateWithSidebar(url); };
+    return {
+      goHome: (e) => this.goHome(e),
+      project: { ...project, moreNote: 'full case study \u2014 architecture notes, metrics, and links \u2014 coming soon.' },
+      sidebarVisible: this.state.sidebarVisible,
+      sidebarWidth: this.state.collapsed ? 18 : 240,
+      sidebarContentOpacity: this.state.collapsed ? 0 : 1,
+      onSidebarEnter: () => this.onSidebarEnter(),
+      onSidebarLeave: () => this.onSidebarLeave(),
+      navItems: [
+        { labelLower: 'projects', href: 'Portfolio.dc.html#projects', onClick: (e) => e.preventDefault() },
+      ],
+      showBreadcrumb: !this.state.sidebarVisible || this.state.collapsed,
+    };
+  }
+}
+</script>
+</body>
+</html>
