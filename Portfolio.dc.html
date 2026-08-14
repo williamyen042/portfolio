@@ -302,7 +302,7 @@ problems worth automating</p>
                 <div style="display: flex; align-items: baseline; gap: 12px;">
                   <span style="font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; color: {{ p.numColor }}; transition: color 0.4s ease;">{{ p.num }}</span>
                   <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}">
-                    <img src="{{ p.logo }}" alt="{{ p.titleLower }} logo" style="width: 18px; height: 18px; object-fit: contain; opacity: {{ p.logoOpacity }}; transition: opacity 0.4s ease; align-self: center;">
+                    <div role="img" aria-label="{{ p.titleLower }} logo" style="width: 18px; height: 18px; background-image: {{ p.logoBg }}; background-size: contain; background-repeat: no-repeat; background-position: center; opacity: {{ p.logoOpacity }}; transition: opacity 0.4s ease; align-self: center;"></div>
                   </sc-if>
                   <span style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 23px; letter-spacing: -0.01em; color: {{ p.titleColor }}; transition: color 0.4s ease;">{{ p.titleLower }}</span>
                   <span style="font-family: 'Courier Prime', monospace; font-size: 14px; color: #e04a2e; opacity: {{ p.arrowOpacity }}; transform: {{ p.arrowShift }}; transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.2,0.7,0.2,1);">→</span>
@@ -679,6 +679,7 @@ class Component extends DCLogic {
           onClick: navigate(`Project.dc.html?slug=${p.slug}`),
           onEnter: () => { this._reelPaused = true; this.setState({ reelActive: i, reelProgress: 0, reelHover: true }); },
           logoOpacity: on ? 1 : 0.45,
+          logoBg: p.logo ? `url(${p.logo})` : 'none',
           numColor: on ? '#e04a2e' : '#3f3f47',
           titleColor: on ? '#f5f2ec' : '#6b6b73',
           metaColor: on ? '#8a8a92' : '#3f3f47',
