@@ -47,6 +47,12 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
   .social-icon:hover { color: #e04a2e; transform: translateY(-2px); }
   .proj-row { transition: background 0.2s ease; }
   .proj-row:hover { background: #101015; }
+  .pgrid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,0.92fr); gap: 56px; align-items: start; width: 100%; text-align: left; }
+  .pstage { position: relative; overflow: hidden; border: 1px solid #1e1e24; background: #0e0e12; aspect-ratio: 4 / 3; display: block; }
+  @media (max-width: 900px) {
+    .pgrid { grid-template-columns: minmax(0,1fr); gap: 28px; }
+    .pstage { order: -1; }
+  }
   .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
   .bento-card { transition: transform 0.35s cubic-bezier(0.2,0.7,0.2,1), box-shadow 0.35s ease, border-color 0.2s ease; }
   .bento-card.hoverable:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -24px rgba(20,20,26,0.18), 0 2px 6px rgba(20,20,26,0.04); }
@@ -279,21 +285,61 @@ problems worth automating</p>
     </section>
 
     <!-- PROJECTS -->
-    <section id="projects" class="reveal" style="padding: 96px 24px 120px; text-align: center;">
-      <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-        <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">02 · projects</div>
-        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0 0 56px;">four case studies. product-grade craft, wire to wire.</p>
+    <section id="projects" class="reveal" style="padding: 96px 24px 120px;">
+      <div style="max-width: 1080px; margin: 0 auto;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 44px;">
+          <div>
+            <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">02 · projects</div>
+            <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0;"><br></p>
+          </div>
+          <a href="Project.dc.html" onClick="{{ goProjects }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; cursor: pointer;">view all projects →</a>
+        </div>
 
-        <div style="width: 100%; display: flex; flex-direction: column;">
-          <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
-            <a href="{{ p.href }}" onClick="{{ p.onClick }}" class="proj-row" style="display: block; padding: 28px 0; border-top: 1px solid #1a1a1e; text-align: center; cursor: pointer; color: #e8e6e1;">
-              <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.1em; margin-bottom: 8px;">{{ p.metaLine }}</div>
-              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 24px; margin: 0 0 10px; letter-spacing: -0.01em;">{{ p.titleLower }}</div>
-              <p style="font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 1.6; color: #8a8a92; margin: 0 auto; max-width: 460px;">{{ p.desc }}</p>
-              <div class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; margin-top: 12px;">read case study →</div>
-            </a>
-          </sc-for>
-          <div style="border-top: 1px solid #1a1a1e;"></div>
+        <div class="pgrid" onMouseLeave="{{ onReelLeave }}">
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ reel }}" as="p" hint-placeholder-count="4">
+              <a href="{{ p.href }}" onClick="{{ p.onClick }}" onMouseEnter="{{ p.onEnter }}" onFocus="{{ p.onEnter }}" style="display: block; padding: 20px 0 0; border-top: 1px solid #1a1a1e; cursor: pointer; color: #e8e6e1; text-decoration: none;">
+                <div style="display: flex; align-items: baseline; gap: 12px;">
+                  <span style="font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.1em; color: {{ p.numColor }}; transition: color 0.4s ease;">{{ p.num }}</span>
+                  <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}">
+                    <img src="{{ p.logo }}" alt="{{ p.titleLower }} logo" style="width: 18px; height: 18px; object-fit: contain; opacity: {{ p.logoOpacity }}; transition: opacity 0.4s ease; align-self: center;">
+                  </sc-if>
+                  <span style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 23px; letter-spacing: -0.01em; color: {{ p.titleColor }}; transition: color 0.4s ease;">{{ p.titleLower }}</span>
+                  <span style="font-family: 'Courier Prime', monospace; font-size: 14px; color: #e04a2e; opacity: {{ p.arrowOpacity }}; transform: {{ p.arrowShift }}; transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.2,0.7,0.2,1);">→</span>
+                </div>
+                <div style="font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.08em; color: {{ p.metaColor }}; margin-top: 7px; transition: color 0.4s ease;">{{ p.metaLine }}</div>
+                <div style="overflow: hidden; max-height: {{ p.blurbHeight }}; opacity: {{ p.blurbOpacity }}; transition: max-height 0.5s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;">
+                  <p style="font-family: 'Courier Prime', monospace; font-size: 12.5px; line-height: 1.6; color: #8a8a92; margin: 9px 0 0; max-width: 420px; text-wrap: pretty;">{{ p.blurb }}</p>
+                </div>
+                <div style="height: 1px; background: #1a1a1e; margin-top: 18px; position: relative; overflow: hidden;">
+                  <div style="position: absolute; inset: 0 auto 0 0; width: {{ p.progress }}; background: #e04a2e; opacity: {{ p.progressOpacity }}; transition: width 0.12s linear, opacity 0.3s ease;"></div>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+
+          <a href="{{ activeHref }}" onClick="{{ activeClick }}" class="pstage">
+            <sc-for list="{{ plates }}" as="s" hint-placeholder-count="1">
+              <div style="position: absolute; inset: 0; opacity: {{ s.opacity }}; transform: {{ s.transform }}; transition: opacity 0.65s ease, transform 0.9s cubic-bezier(0.16,1,0.3,1);">
+                <sc-if value="{{ s.hasShot }}" hint-placeholder-val="{{ false }}">
+                  <div role="img" aria-label="{{ s.alt }}" style="width: 100%; height: 100%; background-image: {{ s.bg }}; background-size: contain; background-position: center; background-repeat: no-repeat; background-color: #0e0e12;"></div>
+                </sc-if>
+                <sc-if value="{{ s.noShot }}" hint-placeholder-val="{{ false }}">
+                  <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: repeating-linear-gradient(135deg, #14141a 0 7px, #101015 7px 14px);">
+                    <span style="font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4a4a52; background: #0e0e12; padding: 6px 10px; border: 1px solid #1e1e24;">{{ s.plateLabel }}</span>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div style="position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; font-family: 'Courier Prime', monospace; font-size: 10px; letter-spacing: 0.12em; color: #8a8a92; background: linear-gradient(to bottom, rgba(10,10,12,0.9), rgba(10,10,12,0));">
+              <span>{{ activeFile }}</span>
+              <span>{{ activeCounter }}</span>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 11px 12px; background: rgba(10,10,12,0.88); border-top: 1px solid #1e1e24; font-family: 'Courier Prime', monospace; font-size: 11px;">
+              <span style="font-style: italic; color: #e8e6e1;">{{ activeTitle }}</span>
+              <span class="read-more" style="font-style: italic; font-size: 11px;">read case study →</span>
+            </div>
+          </a>
         </div>
       </div>
     </section>
@@ -536,6 +582,15 @@ class Component extends DCLogic {
         if (i >= line.length) holding = 34;
       }, 62);
     }
+    this._reelTimer = setInterval(() => {
+      if (this._reelPaused) return;
+      const count = Component.PROJECTS.length;
+      this.setState((s) => {
+        const next = (s.reelProgress || 0) + 100 / 54;
+        if (next >= 100) return { reelProgress: 0, reelActive: ((s.reelActive || 0) + 1) % count };
+        return { reelProgress: next };
+      });
+    }, 100);
     this._problemTimer = setInterval(() => {
       this.setState((s) => ({ struck: (s.struck + 1) % (Component.GOT_RID.length + 3) }));
     }, 1250);
@@ -564,6 +619,10 @@ class Component extends DCLogic {
     const navigateSmooth = (url) => (e) => { if (e) e.preventDefault(); this.navigateSmooth(url); };
     const navigateSidebar = (url) => (e) => { if (e) e.preventDefault(); this.navigateWithSidebar(url); };
     const navigateSidebarSmooth = (url) => (e) => { if (e) e.preventDefault(); this.navigateSmoothWithSidebar(url); };
+    const active = this.state.reelActive || 0;
+    const progress = Math.min(100, this.state.reelProgress || 0);
+    const hovering = !!this.state.reelHover;
+    const current = Component.PROJECTS[active];
     return {
       clockTime: timeStr,
       clockDate: dateStr,
@@ -592,15 +651,16 @@ class Component extends DCLogic {
       goAbout: navigateSmooth('About.dc.html'),
       navItems: [
         { num: '01', label: 'ABOUT ME',        labelLower: 'about me',        href: 'About.dc.html',           onClick: navigateSidebarSmooth('About.dc.html') },
-        { num: '02', label: 'PROJECTS',        labelLower: 'projects',        href: '#projects',               onClick: scrollTo('projects') },
+        { num: '02', label: 'PROJECTS',        labelLower: 'projects',        href: 'Project.dc.html',         onClick: navigate('Project.dc.html') },
         { num: '03', label: 'WORK EXPERIENCE', labelLower: 'work experience', href: 'Work%20Experience.dc.html', onClick: navigate('Work%20Experience.dc.html') },
         { num: '04', label: 'CONTACT',          labelLower: 'contact',        href: '#contact',                onClick: scrollTo('contact') },
       ],
       jumpProjects: scrollTo('projects'),
+      goProjects: navigate('Project.dc.html'),
       jumpContact:  scrollTo('contact'),
       footerLinks: [
         { label: 'about me',        href: 'About.dc.html', onClick: navigateSmooth('About.dc.html') },
-        { label: 'projects',        onClick: scrollTo('projects') },
+        { label: 'projects',        href: 'Project.dc.html', onClick: navigate('Project.dc.html') },
         { label: 'work experience', href: 'Work%20Experience.dc.html', onClick: navigate('Work%20Experience.dc.html') },
         { label: 'contact',         onClick: scrollTo('contact') },
         { label: 'email',    href: 'mailto:williamyen042@gmail.com' },
@@ -610,16 +670,42 @@ class Component extends DCLogic {
         { label: 'back to top', onClick: (e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } },
         { label: 'back to home', onClick: scrollTo('about'), divider: false },
       ].map((l, i, arr) => ({ href: '#', ...l, divider: l.divider !== undefined ? l.divider : i < arr.length - 1 })),
-      projects: [
-        { slug: 'meridian', titleLower: 'meridian', metaLine: '2026 · infrastructure · rust · tokio · postgres · grpc',
-          desc: 'a distributed job scheduler built for latency-critical workloads. handles 40k jobs/sec with sub-ms tail latency and zero-config deployment.' },
-        { slug: 'lantern', titleLower: 'lantern', metaLine: '2025 · dev tools · go · ebpf · react',
-          desc: 'local-first observability. zero-config traces with sub-ms overhead.' },
-        { slug: 'halfstep', titleLower: 'halfstep', metaLine: '2025 · open source · typescript · rollup',
-          desc: 'a tiny, type-checked query builder for typescript. loved by ~3k developers on github.' },
-        { slug: 'cadence', titleLower: 'cadence', metaLine: '2024 · internal · node · swift · kotlin',
-          desc: 'a design-system runtime shipping tokens as code across web, ios, and android in one build step.' },
-      ].map((p) => ({ ...p, href: `Project.dc.html?slug=${p.slug}`, onClick: navigate(`Project.dc.html?slug=${p.slug}`) })),
+      reel: Component.PROJECTS.map((p, i) => {
+        const on = i === active;
+        return {
+          ...p,
+          num: String(i + 1).padStart(2, '0'),
+          href: `Project.dc.html?slug=${p.slug}`,
+          onClick: navigate(`Project.dc.html?slug=${p.slug}`),
+          onEnter: () => { this._reelPaused = true; this.setState({ reelActive: i, reelProgress: 0, reelHover: true }); },
+          logoOpacity: on ? 1 : 0.45,
+          numColor: on ? '#e04a2e' : '#3f3f47',
+          titleColor: on ? '#f5f2ec' : '#6b6b73',
+          metaColor: on ? '#8a8a92' : '#3f3f47',
+          arrowOpacity: on ? 1 : 0,
+          arrowShift: on ? 'translateX(0)' : 'translateX(-8px)',
+          blurbHeight: on ? '84px' : '0px',
+          blurbOpacity: on ? 1 : 0,
+          progress: on ? (hovering ? '100%' : progress + '%') : '0%',
+          progressOpacity: on ? (hovering ? 0.3 : 1) : 0,
+        };
+      }),
+      plates: Component.PROJECTS.map((p, i) => ({
+        titleLower: p.titleLower,
+        bg: p.shot ? `url(${p.shot})` : 'none',
+        alt: `${p.titleLower} screenshot`,
+        hasShot: !!p.shot,
+        noShot: !p.shot,
+        plateLabel: `${p.slug}.png · screenshot pending`,
+        opacity: i === active ? 1 : 0,
+        transform: i === active ? 'scale(1)' : 'scale(1.035)',
+      })),
+      activeTitle: current.titleLower,
+      activeFile: `${current.slug}/preview`,
+      activeCounter: `${String(active + 1).padStart(2, '0')} / ${String(Component.PROJECTS.length).padStart(2, '0')}`,
+      activeHref: `Project.dc.html?slug=${current.slug}`,
+      activeClick: navigate(`Project.dc.html?slug=${current.slug}`),
+      onReelLeave: () => { this._reelPaused = false; this.setState({ reelHover: false, reelProgress: 0 }); },
       experiences: [
         { range: 'INCOMING', roleLine: 'software engineer intern / pwc - tax innovation & delivery experience',
           desc: 'joining the tax innovation & delivery experience team to build ai tools that modernizes tax workflows.',
@@ -680,6 +766,18 @@ class Component extends DCLogic {
     };
   }
 }
-</script>
+
+
+Component.PROJECTS = [
+  { slug: 'syllasync', titleLower: 'syllasync', logo: 'assets/syllasync-logo-transparent.png', metaLine: '2024 · WEB APP · 100+ USERS · 700+ SYLLABI PROCESSED',
+    blurb: 'uploads a syllabus pdf, pulls every assignment, exam and deadline with an llm, and pushes the ones you approve straight to google calendar.',
+    shot: 'assets/syllasync-dark.png' },
+  { slug: 'slack_searcher', titleLower: 'slack searcher', metaLine: '2026 · MCP SERVER · PYTHON · SQLITE · OPENAI · RAG',
+    blurb: 'a slack search tool that answers only from real, cited messages — grounded rag over an mcp server, never a guess.', shot: null },
+  { slug: 'halfstep', titleLower: 'halfstep', metaLine: '2025 · OPEN SOURCE · TYPESCRIPT · ROLLUP',
+    blurb: 'a tiny, type-checked query builder for typescript, used by ~3k developers on github.', shot: null },
+  { slug: 'cadence', titleLower: 'cadence', metaLine: '2024 · INTERNAL · NODE · SWIFT · KOTLIN',
+    blurb: 'a design-system runtime shipping tokens as code across web, ios and android in one build step.', shot: null },
+];</script>
 </body>
 </html>

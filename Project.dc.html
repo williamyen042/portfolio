@@ -8,15 +8,16 @@
 <body>
 <x-dc>
 <helmet>
+<script src="./image-slot.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet">
 <style>
   html, body { margin: 0; padding: 0; background: #0a0a0c; color: #e8e6e1; font-family: 'Courier Prime', 'Courier New', monospace; -webkit-font-smoothing: antialiased; }
   * { box-sizing: border-box; }
   a { color: inherit; text-decoration: none; }
   a:hover { color: #e04a2e; }
-  .chip { display: inline-block; padding: 6px 12px; border: 1px solid #1a1a1e; font-size: 12px; font-style: italic; }
+  .chip { display: inline-block; padding: 8px 14px; border: 1px solid #1a1a1e; font-size: 13px; font-style: italic; }
   .nav-item { position: relative; display: block; width: 100%; transition: color 0.15s ease, padding 0.25s ease; }
   .nav-item .lbl { position: relative; z-index: 1; display: inline-block; transition: color 0.15s ease, font-size 0.3s cubic-bezier(0.2,0.7,0.2,1); }
   .nav-item .lbl::before, .nav-item .lbl::after { content: attr(data-txt); position: absolute; inset: 0; pointer-events: none; opacity: 0; }
@@ -28,6 +29,20 @@
   @keyframes glitchR { 0%,100% { transform: translate(0,0); } 20% { transform: translate(2px,-1px); } 40% { transform: translate(-1px,1px); } 60% { transform: translate(1px,0); } }
   @keyframes glitchB { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-2px,1px); } 40% { transform: translate(1px,-1px); } 60% { transform: translate(-1px,0); } }
   @keyframes flickerIn { 0% { opacity: 0; } 20% { opacity: 1; } 30% { opacity: 0.2; } 45% { opacity: 1; } 55% { opacity: 0.4; } 70% { opacity: 1; } }
+  .pcard { transition: background 0.25s ease, border-color 0.25s ease, transform 0.35s cubic-bezier(0.2,0.7,0.2,1); }
+  .pcard:hover { background: #101015; border-color: #2a2a30; transform: translateY(-3px); }
+  .pbtn { transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease; }
+  .pcard:hover .pbtn { background: #e04a2e; color: #ffffff; border-color: #e04a2e; }
+  .pthumb { transition: filter 0.35s ease, transform 0.5s cubic-bezier(0.2,0.7,0.2,1); filter: grayscale(1) brightness(0.78); }
+  .pcard:hover .pthumb { filter: grayscale(0) brightness(1); transform: scale(1.04); }
+  .live-btn { transition: background 0.18s ease, color 0.18s ease; }
+  .live-btn:hover { background: transparent; color: #e04a2e; }
+  .ghost-btn { transition: border-color 0.18s ease, color 0.18s ease; }
+  .ghost-btn:hover { border-color: #e04a2e; color: #e04a2e; }
+  .pstack img { transition: transform 0.55s cubic-bezier(0.2,0.7,0.2,1), filter 0.4s ease; filter: saturate(0.75) brightness(0.86); }
+  .pcard:hover .pstack img { filter: saturate(1) brightness(1); }
+  .pcard:hover .pstack img:first-child { transform: rotate(-5deg) translate(-10px, -8px); }
+  .pcard:hover .pstack img:last-child { transform: rotate(3.5deg) translate(8px, 6px); }
 </style>
 </helmet>
 <div style="display: flex; min-height: 100vh; background: #0a0a0c; position: relative;">
@@ -55,24 +70,137 @@
     <a href="Portfolio.dc.html" onClick="{{ goHome }}" style="position: fixed; top: 24px; left: 24px; font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; color: #6b6b70; letter-spacing: 0.05em; cursor: pointer;">← back to home</a>
   </sc-if>
 
-  <div style="padding: 96px 24px 120px; text-align: center;">
-    <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-      <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 16px;">02 · projects</div>
-      <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.1em; margin-bottom: 8px;">{{ project.metaLine }}</div>
-      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 34px; margin: 0 0 20px; letter-spacing: -0.01em;">{{ project.titleLower }}</h1>
-      <p style="font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.65; color: #8a8a92; margin: 0 auto; max-width: 480px;">{{ project.desc }}</p>
+  <sc-if value="{{ showIndex }}" hint-placeholder-val="{{ true }}">
+  <div style="padding: 112px 48px 140px; text-align: center;">
+    <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+      <div style="display: inline-block; background: #e04a2e; padding: 6px 14px 7px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 13px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 18px;">02 · projects</div>
+      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 46px; margin: 0 0 12px; letter-spacing: -0.01em;">what i've built</h1>
+      <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 16px; color: #8a8a92; margin: 0 0 64px;">every project, start to ship.</p>
 
-      <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
+      <div style="width: 100%; display: flex; flex-direction: column; gap: 28px;">
+        <sc-for list="{{ projects }}" as="p" hint-placeholder-count="4">
+          <a href="{{ p.href }}" onClick="{{ p.onClick }}" class="pcard" style="display: flex; align-items: stretch; gap: 0; border: 1px solid #1a1a1e; background: #0c0c10; text-align: left; cursor: pointer; color: #e8e6e1; overflow: hidden;">
+            <div style="flex: 1 1 44%; min-width: 0; padding: 44px 40px; display: flex; flex-direction: column; align-items: flex-start;">
+              <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.12em; margin-bottom: 14px;">{{ p.metaLine }}</div>
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}">
+                  <img src="{{ p.logo }}" alt="{{ p.titleLower }} logo" style="width: 32px; height: 32px; object-fit: contain; display: block;">
+                </sc-if>
+                <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 34px; letter-spacing: -0.01em;">{{ p.titleLower }}</div>
+              </div>
+              <p style="font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.75; color: #8a8a92; margin: 0 0 30px; text-wrap: pretty;">{{ p.desc }}</p>
+              <div class="pbtn" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #e04a2e; border: 1px solid #2a2a30; padding: 12px 24px; letter-spacing: 0.04em; white-space: nowrap; margin-top: auto;">read more →</div>
+            </div>
+            <div style="flex: 1 1 56%; min-height: 360px; background: #0e0e12; border-left: 1px solid #1a1a1e; overflow: hidden; position: relative;">
+              <sc-if value="{{ p.hasShots }}" hint-placeholder-val="{{ false }}">
+                <div class="pstack" style="position: absolute; inset: 0;">
+                  <div style="position: absolute; width: 66%; top: 10%; left: 7%; aspect-ratio: {{ p.backAspect }}; background-image: {{ p.backBg }}; background-size: cover; background-position: top center; border: 1px solid #2a2a30; box-shadow: 0 14px 34px rgba(0,0,0,0.6); transform: rotate(-3.5deg);"></div>
+                  <div style="position: absolute; width: 70%; top: 33%; left: 26%; aspect-ratio: {{ p.frontAspect }}; background-image: {{ p.frontBg }}; background-size: cover; background-position: top center; border: 1px solid #33333a; box-shadow: 0 20px 44px rgba(0,0,0,0.72); transform: rotate(2.5deg);"></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ p.noShots }}" hint-placeholder-val="{{ true }}">
+                <image-slot class="pthumb" id="{{ p.slotId }}" placeholder="{{ p.slotHint }}" style="width: 100%; height: 100%; display: block;"></image-slot>
+              </sc-if>
+            </div>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
+  <div style="padding: 112px 48px 140px; text-align: center;">
+    <div style="max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+      <a href="Project.dc.html" onClick="{{ goProjects }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 13px; color: #e04a2e; margin-bottom: 24px; cursor: pointer;">← all projects</a>
+      <sc-if value="{{ project.logo }}" hint-placeholder-val="{{ false }}">
+        <img src="{{ project.logo }}" alt="{{ project.titleLower }} logo" style="width: 72px; height: 72px; object-fit: contain; display: block; margin-bottom: 20px;">
+      </sc-if>
+      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 52px; margin: 0 0 16px; letter-spacing: -0.01em;">{{ project.titleLower }}</h1>
+
+      <p style="font-family: 'Courier Prime', monospace; font-size: 16px; line-height: 1.75; color: #8a8a92; margin: 0 auto; max-width: 620px; text-wrap: pretty;">{{ project.desc }}</p>
+
+      <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 24px;">
+        <sc-if value="{{ project.liveUrl }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ project.liveUrl }}" target="_blank" rel="noopener" class="live-btn" style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 14px; color: #ffffff; background: #e04a2e; border: 1px solid #e04a2e; padding: 13px 26px; letter-spacing: 0.03em;">live app →</a>
+        </sc-if>
+        <sc-if value="{{ project.repoUrl }}" hint-placeholder-val="{{ false }}">
+          <a href="{{ project.repoUrl }}" target="_blank" rel="noopener" class="ghost-btn" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #e8e6e1; border: 1px solid #2a2a30; padding: 13px 26px; letter-spacing: 0.03em;">source →</a>
+        </sc-if>
+      </div>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 22px; max-width: 620px;">
         <sc-for list="{{ project.stack }}" as="s" hint-placeholder-count="4">
           <span class="chip">{{ s }}</span>
         </sc-for>
       </div>
 
-      <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #1a1a1e; width: 100%;">
-        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 13px; line-height: 1.7; color: #cfcdc7; margin: 0 auto; max-width: 480px;">{{ project.moreNote }}</p>
-      </div>
+      <sc-if value="{{ project.demoSrc }}" hint-placeholder-val="{{ true }}">
+        <div style="width: 100%; margin-top: 56px; padding-top: 36px; border-top: 1px solid #1a1a1e;">
+          <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 20px;">DEMO VIDEO</div>
+          <div style="position: relative; width: 100%; padding-bottom: 57.38575982996812%; height: 0; border: 1px solid #1a1a1e; background: #101015;">
+            <iframe src="{{ project.demoSrc }}" frameborder="0" webkitallowfullscreen="" mozallowfullscreen="" allowfullscreen="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ project.hasFeatures }}" hint-placeholder-val="{{ false }}">
+        <div style="width: 100%; margin-top: 72px; padding-top: 44px; border-top: 1px solid #1a1a1e; display: flex; gap: 56px; text-align: left; flex-wrap: wrap;">
+          <div style="flex: 0 0 200px;">
+            <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 26px;">WHAT IT DOES</div>
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <sc-for list="{{ project.facts }}" as="f" hint-placeholder-count="3">
+                <div>
+                  <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 6px;">{{ f.label }}</div>
+                  <div style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 15px; color: #e8e6e1;">{{ f.value }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex: 1 1 480px; display: flex; flex-direction: column; max-width: 760px;">
+            <sc-for list="{{ project.features }}" as="f" hint-placeholder-count="4">
+              <div style="padding: 22px 0; border-top: 1px solid {{ f.borderColor }};">
+                <div style="font-family: 'Courier Prime', monospace; font-size: 11px; letter-spacing: 0.16em; color: #e04a2e; margin-bottom: 9px;">{{ f.q }}</div>
+                <p style="font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.75; color: #8a8a92; margin: 0; text-wrap: pretty;">{{ f.a }}</p>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ project.hasStackDetail }}" hint-placeholder-val="{{ false }}">
+        <div style="width: 100%; margin-top: 72px; padding-top: 44px; border-top: 1px solid #1a1a1e; text-align: left;">
+          <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 26px;">TECH STACK</div>
+          <div style="display: flex; flex-direction: column;">
+            <sc-for list="{{ project.stackDetail }}" as="t" hint-placeholder-count="6">
+              <div style="display: flex; gap: 28px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid #141418; flex-wrap: wrap;">
+                <div style="flex: 0 0 230px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 15px; color: #e8e6e1;">{{ t.name }}</div>
+                <div style="flex: 1 1 300px; font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.7; color: #8a8a92; text-wrap: pretty;">{{ t.desc }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ project.hasKeyTech }}" hint-placeholder-val="{{ false }}">
+        <div style="width: 100%; margin-top: 48px;">
+          <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 18px;">KEY TECHNOLOGIES</div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <sc-for list="{{ project.keyTech }}" as="k" hint-placeholder-count="4">
+              <span class="chip">{{ k }}</span>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ project.moreNote }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid #1a1a1e; width: 100%;">
+          <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 13px; line-height: 1.7; color: #cfcdc7; margin: 0 auto; max-width: 480px;">{{ project.moreNote }}</p>
+        </div>
+      </sc-if>
     </div>
   </div>
+  </sc-if>
   </main>
 </div>
 </x-dc>
@@ -80,12 +208,68 @@
 class Component extends DCLogic {
   state = { loaded: false, sidebarVisible: false, collapsed: false };
   static PROJECTS = {
-    meridian: { titleLower: 'meridian', metaLine: '2026 · infrastructure · rust · tokio · postgres · grpc',
-      desc: 'a distributed job scheduler built for latency-critical workloads. handles 40k jobs/sec with sub-ms tail latency and zero-config deployment.',
-      stack: ['rust', 'tokio', 'postgres', 'grpc'] },
-    lantern: { titleLower: 'lantern', metaLine: '2025 · dev tools · go · ebpf · react',
-      desc: 'local-first observability. zero-config traces with sub-ms overhead.',
-      stack: ['go', 'ebpf', 'react'] },
+    syllasync: { titleLower: 'syllasync', logo: 'assets/syllasync-logo-transparent.png', metaLine: '2024 · web app · next.js · supabase · groq · gemini',
+      desc: 'a full-stack ai powered web app that automatically takes uploaded syllabi pdfs and sends the important dates to the user\'s google calendar. assignments, exams and deadlines are extracted by an llm, reviewed by you, then exported to your google calendar directly or as an .ics file.\nover 100 users, 700+ syllabi processed',
+      demoSrc: 'https://www.loom.com/embed/2d7f301b3c5b4f1eaab3f4fa765a8399',
+      liveUrl: 'https://syllasync.netlify.app/',
+      shotBack: 'assets/syllasync-light.png',
+      shotFront: 'assets/syllasync-dark.png',
+      repoUrl: 'https://github.com/sillywillyatUT/SyllaSync',
+      facts: [
+        { label: 'TYPE', value: 'web app' },
+        { label: 'ROLE', value: 'developer & designer' },
+        { label: 'YEAR', value: '2024' },
+        { label: 'USERS', value: '100+' },
+        { label: 'SYLLABI PROCESSED', value: '700+' },
+      ],
+      features: [
+        { q: 'EXTRACTION', a: 'the server pulls text out of the pdf with pdf.js, then throws away every page with no date-like content — grading policy, academic integrity boilerplate, office hours — before anything reaches a model. less noise in, fewer tokens spent, fewer hallucinated deadlines out.' },
+        { q: 'AI FALLBACK', a: 'the filtered text goes to an llm asking for a structured list of events. groq (llama-3.3-70b-versatile) runs first; if it hits a rate limit, gemini (gemini-3.5-flash-lite) picks up the same request automatically, so a busy afternoon never turns into a failed upload.' },
+        { q: 'HUMAN REVIEW', a: 'nothing lands on your calendar unreviewed. the review screen groups events by course, makes every title, date and type editable, and gives each row a checkbox so anything wrong — or unwanted — is excluded before export.' },
+        { q: 'EXPORT', a: 'export sends events straight to google calendar over oauth, with a color picker for the calendar they land in, or downloads a standards-compliant .ics file any calendar app will take. recurring lectures carry a proper rrule bounded by the semester end date instead of repeating forever.' },
+        { q: 'DATE HANDLING', a: 'syllabi write dates as "9/10" and state the year once at the top, so a date-normalize pass detects the term year from the document and backfills it deterministically — every event leaves the api as an unambiguous yyyy-mm-dd, anchored to the school\u2019s local time rather than the server\u2019s.' },
+      ],
+      stackDetail: [
+        { name: 'next.js 14 (app router)', desc: 'frontend framework and api routes — the extraction and .ics endpoints run here.' },
+        { name: 'typescript', desc: 'end-to-end types across the upload flow, extraction pipeline and export routes.' },
+        { name: 'tailwind css + shadcn/ui', desc: 'utility styling on top of radix primitives for the upload and review interfaces.' },
+        { name: 'framer motion', desc: 'transitions through the upload → extract → review → export flow.' },
+        { name: 'supabase', desc: 'postgres, auth and storage — accounts, uploaded syllabi and saved event sets.' },
+        { name: 'netlify functions', desc: 'the google calendar export runs as a serverless function outside the next.js request cycle.' },
+        { name: 'groq sdk', desc: 'primary date extraction with llama-3.3-70b-versatile.' },
+        { name: '@google/genai', desc: 'gemini-3.5-flash-lite as the automatic fallback when groq is rate-limited.' },
+        { name: 'pdfjs-serverless', desc: 'pdf text extraction that works in a serverless runtime.' },
+      ],
+      keyTech: ['next.js 14', 'typescript', 'node', 'supabase / postgres', 'google calendar api (oauth 2.0)', 'icalendar (.ics)', 'netlify'],
+      stack: ['next.js 14', 'typescript', 'tailwind', 'shadcn/ui', 'framer motion', 'supabase', 'netlify functions', 'groq', 'gemini', 'pdf.js'] },
+    slack_searcher: { titleLower: 'slack searcher', metaLine: '2026 · mcp server · python · sqlite · openai · rag',
+      desc: "an mcp-powered slack search tool. a scheduled indexer keeps a local sqlite index of workspace messages and their embeddings; at query time an assistant searches that index — dense, bm25, or hybrid — and answers only from what it finds, with every claim cited back to the original slack message. 5th place out of 93 teams at ibm's company-wide hackathon.",
+      facts: [
+        { label: 'TYPE', value: 'mcp server' },
+        { label: 'ROLE', value: 'developer' },
+        { label: 'YEAR', value: '2026' },
+        { label: 'RESULT', value: '5th / 93 teams' },
+        { label: 'TESTS', value: '122, offline' },
+      ],
+      features: [
+        { q: 'GROUNDING', a: 'the model can only answer from what search_slack returns — the mcp tool surface is the only information channel it has at runtime, so it has no path to draw on training data about a specific workspace. if the tool finds nothing, there is nothing to say. every claim in a response ships with a permalink back to the source message.' },
+        { q: 'INDEX / QUERY SPLIT', a: 'indexing and querying run on two schedules because embedding is the slow, paid step and re-running it on every query scaled cost and latency with the whole corpus. a timed job fetches new or edited messages, chunks them on token boundaries, embeds only what changed, and persists to sqlite; the query path embeds one query vector and matmuls against what is already stored, so query cost stays flat as the corpus grows.' },
+        { q: 'RETRIEVAL MODES', a: 'three modes cover different query shapes: dense embeddings match by meaning ("what did we decide about security?"), bm25 matches exact tokens like error codes or ticket ids that embeddings tend to generalize away, and hybrid combines both rankings with reciprocal rank fusion rather than normalizing incommensurable scores directly.' },
+        { q: 'STAYING FRESH', a: 'a cursor only advances past timestamps it has seen, which misses three kinds of change: a reply on an old thread, an edit (editing does not move ts), and a deletion. three cron schedules at different lookback windows catch all three — a cheap 15-minute incremental run, a nightly reconcile, and a weekly full-history clean — with unchanged messages costing zero embeddings on a re-walk.' },
+        { q: 'ACCESS & TESTING', a: 'access is enforced at ingestion, not query time: the bot can only read channels it is invited to, and the pilot is scoped to public channels only, since query-time permission filtering by the asking user\'s channel membership is a distinct, not-yet-built phase. an evaluation harness (recall@5/10, mrr@10, broken down by query type) calls the exact ranking function search_slack delegates to, and a 122-test pytest suite runs fully offline with slack, openai, and mcp stubbed out.' },
+      ],
+      stackDetail: [
+        { name: 'fastmcp (python)', desc: 'the mcp server exposing search_slack, get_thread, list_channels and get_reactions as tools.' },
+        { name: 'openai embeddings', desc: 'text-embedding-3-small for dense retrieval vectors, batched at index time.' },
+        { name: 'sqlite', desc: 'the persistent chunk + vector store — brute-force cosine is fast enough at this scale, no vector db needed.' },
+        { name: 'bm25s', desc: 'lexical index over the same chunks, with a slack-aware tokenizer that preserves tokens like err_500 and us-east-1.' },
+        { name: 'tiktoken', desc: 'token-based chunking (350-token windows, 60-token overlap) matching the embedding model\'s own tokenizer.' },
+        { name: 'slack sdk', desc: 'conversations.history/replies for incremental fetch; permalinks built locally from one cached auth.test.' },
+        { name: 'next.js', desc: 'the streaming chat client that renders the assistant\'s answer with clickable citation links.' },
+        { name: 'pytest', desc: '122 tests, ~0.7s, with openai/slack_sdk/fastmcp fully stubbed — no network, no credentials.' },
+      ],
+      keyTech: ['mcp (model context protocol)', 'rag / hybrid retrieval', 'bm25 + reciprocal rank fusion', 'sqlite', 'openai embeddings', 'python', 'next.js'],
+      stack: ['python', 'fastmcp', 'openai', 'sqlite', 'bm25s', 'slack sdk', 'next.js', 'pytest'] },
     halfstep: { titleLower: 'halfstep', metaLine: '2025 · open source · typescript · rollup',
       desc: 'a tiny, type-checked query builder for typescript. loved by ~3k developers on github.',
       stack: ['typescript', 'rollup'] },
@@ -132,20 +316,44 @@ class Component extends DCLogic {
     }, 500);
   }
   renderVals() {
-    const slug = new URLSearchParams(window.location.search).get('slug') || 'meridian';
-    const project = Component.PROJECTS[slug] || Component.PROJECTS.meridian;
+    const slug = new URLSearchParams(window.location.search).get('slug');
+    const project = Component.PROJECTS[slug] || Component.PROJECTS.syllasync;
     const navigate = (url) => (e) => { if (e) e.preventDefault(); this.navigate(url); };
     const navigateSidebar = (url) => (e) => { if (e) e.preventDefault(); this.navigateWithSidebar(url); };
     return {
       goHome: (e) => this.goHome(e),
-      project: { ...project, moreNote: 'full case study \u2014 architecture notes, metrics, and links \u2014 coming soon.' },
+      goProjects: navigate('Project.dc.html'),
+      showIndex: !slug,
+      showDetail: !!slug,
+      projects: Object.keys(Component.PROJECTS).map((k) => ({
+        ...Component.PROJECTS[k],
+        slotId: `proj-thumb-${k}`,
+        slotHint: `${Component.PROJECTS[k].titleLower} screenshot`,
+        hasShots: !!Component.PROJECTS[k].shotFront,
+        noShots: !Component.PROJECTS[k].shotFront,
+        backBg: Component.PROJECTS[k].shotBack ? `url(${Component.PROJECTS[k].shotBack})` : 'none',
+        frontBg: Component.PROJECTS[k].shotFront ? `url(${Component.PROJECTS[k].shotFront})` : 'none',
+        backAspect: Component.PROJECTS[k].shotBackAspect || '2.29',
+        frontAspect: Component.PROJECTS[k].shotFrontAspect || '2.12',
+        href: `Project.dc.html?slug=${k}`,
+        onClick: navigate(`Project.dc.html?slug=${k}`),
+      })),
+      project: {
+        ...project,
+        hasFeatures: !!(project.features && project.features.length),
+        features: (project.features || []).map((f, i) => ({ ...f, borderColor: i === 0 ? 'transparent' : '#1a1a1e' })),
+        hasStackDetail: !!(project.stackDetail && project.stackDetail.length),
+        hasKeyTech: !!(project.keyTech && project.keyTech.length),
+        facts: project.facts || [],
+        moreNote: project.features ? '' : 'full case study \u2014 architecture notes, metrics, and links \u2014 coming soon.',
+      },
       sidebarVisible: this.state.sidebarVisible,
       sidebarWidth: this.state.collapsed ? 18 : 240,
       sidebarContentOpacity: this.state.collapsed ? 0 : 1,
       onSidebarEnter: () => this.onSidebarEnter(),
       onSidebarLeave: () => this.onSidebarLeave(),
       navItems: [
-        { labelLower: 'projects', href: 'Portfolio.dc.html#projects', onClick: (e) => e.preventDefault() },
+        { labelLower: 'projects', href: 'Project.dc.html', onClick: slug ? navigate('Project.dc.html') : (e) => e.preventDefault() },
       ],
       showBreadcrumb: !this.state.sidebarVisible || this.state.collapsed,
     };
