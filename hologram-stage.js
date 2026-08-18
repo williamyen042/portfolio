@@ -5,6 +5,14 @@
   if (customElements.get('holo-stage')) return;
 
   const BASE = new URL('.', document.currentScript ? document.currentScript.src : location.href);
+
+  // Matches the mobile breakpoint used by the page stylesheets and
+  // mobile-chrome.js. Evaluated once at load; rotating a phone past the
+  // breakpoint keeps whatever mode the page started in.
+  const mq = (q) => typeof matchMedia === 'function' && matchMedia(q).matches;
+  const DEFER = mq('(max-width: 820px)') ||
+                mq('(prefers-reduced-motion: reduce)') ||
+                !!(navigator.connection && navigator.connection.saveData);
   let booted = null;
 
   function loadGlb() {
@@ -27,7 +35,9 @@
       this.style.position = 'relative';
       this.style.width = this.getAttribute('width') || '100%';
       this.style.maxWidth = this.getAttribute('max-width') || this.getAttribute('maxwidth') || '560px';
-      this.style.height = this.getAttribute('height') || '420px';
+      // On a phone the full-size stage is 440px of an 844px screen - over half
+      // the first screenful, showing a loader. Keep a compact tap target instead.
+      this.style.height = DEFER ? '172px' : (this.getAttribute('height') || '420px');
       this.style.margin = this.getAttribute('margin') || '0 auto';
 
       const stage = document.createElement('div');
@@ -75,7 +85,21 @@
           });
       };
 
-      if ('IntersectionObserver' in window) {
+      // The scene is ~4.4MB (glb + three.js/postfx) and runs bloom every frame.
+      // Narrow screens, reduced-motion and data-saver users get an explicit
+      // opt-in instead of paying that on load.
+      if (DEFER) {
+        const st = stage.querySelector('#hologram-status');
+        if (st) st.textContent = 'tap to load 3d';
+        const bar = stage.querySelector('#hologram-bar');
+        if (bar && bar.parentNode) bar.parentNode.style.display = 'none';
+        stage.addEventListener('click', function onTap() {
+          stage.removeEventListener('click', onTap);
+          if (st) st.textContent = 'Loading';
+          if (bar && bar.parentNode) bar.parentNode.style.display = '';
+          boot();
+        });
+      } else if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((es) => {
           if (es.some((e) => e.isIntersecting)) { io.disconnect(); boot(); }
         }, { rootMargin: '200px' });

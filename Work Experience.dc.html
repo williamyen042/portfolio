@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./mobile-chrome.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -19,6 +20,18 @@
   .read-more { position: relative; display: inline-block; color: #e04a2e; background-image: linear-gradient(115deg, #e04a2e 35%, #fff 50%, #e04a2e 65%); background-size: 300% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; }
   .read-more:hover { animation: glossText 1.5s ease-in-out infinite; -webkit-text-fill-color: transparent; }
   @keyframes glossText { 0% { background-position: 140% 0; } 100% { background-position: -140% 0; } }
+
+  /* ---- mobile ----------------------------------------------------------
+     The sidebar is a flex sibling of <main> with a fixed 240px basis, so on a
+     390px viewport it claimed 240px and pushed the page off-screen. Take it
+     out of flow here; the bottom dock replaces it as the mobile nav.
+     overflow-x uses clip rather than hidden on purpose: hidden would make the
+     body a scroll container and break the sticky positioning the dock and top
+     bar rely on. */
+  @media (max-width: 820px) {
+    aside { display: none !important; }
+    body { overflow-x: clip; }
+  }
 </style>
 </helmet>
 <div style="min-height: 100vh;">
