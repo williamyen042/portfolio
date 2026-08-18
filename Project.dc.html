@@ -94,8 +94,10 @@
             <div style="flex: 1 1 56%; min-height: 360px; background: #0e0e12; border-left: 1px solid #1a1a1e; overflow: hidden; position: relative;">
               <sc-if value="{{ p.hasShots }}" hint-placeholder-val="{{ false }}">
                 <div class="pstack" style="position: absolute; inset: 0;">
-                  <div style="position: absolute; width: 66%; top: 10%; left: 7%; aspect-ratio: {{ p.backAspect }}; background-image: {{ p.backBg }}; background-size: cover; background-position: top center; border: 1px solid #2a2a30; box-shadow: 0 14px 34px rgba(0,0,0,0.6); transform: rotate(-3.5deg);"></div>
-                  <div style="position: absolute; width: 70%; top: 33%; left: 26%; aspect-ratio: {{ p.frontAspect }}; background-image: {{ p.frontBg }}; background-size: cover; background-position: top center; border: 1px solid #33333a; box-shadow: 0 20px 44px rgba(0,0,0,0.72); transform: rotate(2.5deg);"></div>
+                  <sc-if value="{{ p.hasBack }}" hint-placeholder-val="{{ true }}">
+                    <div style="position: absolute; width: 66%; top: 10%; left: 7%; aspect-ratio: {{ p.backAspect }}; background-image: {{ p.backBg }}; background-size: cover; background-position: top center; border: 1px solid #2a2a30; box-shadow: 0 14px 34px rgba(0,0,0,0.6); transform: rotate(-3.5deg);"></div>
+                  </sc-if>
+                  <div style="position: absolute; width: {{ p.frontWidth }}; top: {{ p.frontTop }}; left: {{ p.frontLeft }}; aspect-ratio: {{ p.frontAspect }}; background-image: {{ p.frontBg }}; background-size: cover; background-position: top center; border: 1px solid #33333a; box-shadow: 0 20px 44px rgba(0,0,0,0.72); transform: {{ p.frontTransform }};"></div>
                 </div>
               </sc-if>
               <sc-if value="{{ p.noShots }}" hint-placeholder-val="{{ true }}">
@@ -245,6 +247,10 @@ class Component extends DCLogic {
     slack_searcher: { titleLower: 'slack searcher', metaLine: '2026 · mcp server · python · sqlite · openai · rag',
       demoSrc: 'https://www.loom.com/embed/1296c5d8705e45129d980fe30b2535eb',
       demoPad: '64.6412037037037%',
+      shotBack: 'assets/slack-searcher-indexer.png',
+      shotFront: 'assets/slack-searcher-mcp.png',
+      shotFrontAspect: '1.599',
+      shotFrontTop: '24%',
       desc: "an mcp-powered slack search tool. a scheduled indexer keeps a local sqlite index of workspace messages and their embeddings; at query time an assistant searches that index — dense, bm25, or hybrid — and answers only from what it finds, with every claim cited back to the original slack message. 5th place out of 93 teams at ibm's company-wide hackathon.",
       facts: [
         { label: 'TYPE', value: 'mcp server' },
@@ -337,6 +343,12 @@ class Component extends DCLogic {
         frontBg: Component.PROJECTS[k].shotFront ? `url(${Component.PROJECTS[k].shotFront})` : 'none',
         backAspect: Component.PROJECTS[k].shotBackAspect || '2.29',
         frontAspect: Component.PROJECTS[k].shotFrontAspect || '2.12',
+        // ponytail: single-shot cards reuse the two-shot markup; positions switch here instead of a second sc-if branch
+        hasBack: !!Component.PROJECTS[k].shotBack,
+        frontWidth: Component.PROJECTS[k].shotBack ? '70%' : '78%',
+        frontTop: Component.PROJECTS[k].shotFrontTop || (Component.PROJECTS[k].shotBack ? '33%' : '50%'),
+        frontLeft: Component.PROJECTS[k].shotBack ? '26%' : '11%',
+        frontTransform: Component.PROJECTS[k].shotBack ? 'rotate(2.5deg)' : 'translateY(-50%) rotate(2.5deg)',
         href: `Project.dc.html?slug=${k}`,
         onClick: navigate(`Project.dc.html?slug=${k}`),
       })),
