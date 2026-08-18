@@ -11,6 +11,7 @@
   // breakpoint keeps whatever mode the page started in.
   const mq = (q) => typeof matchMedia === 'function' && matchMedia(q).matches;
   const DEFER = mq('(max-width: 820px)') ||
+                mq('(hover: none) and (pointer: coarse)') ||
                 mq('(prefers-reduced-motion: reduce)') ||
                 !!(navigator.connection && navigator.connection.saveData);
   let booted = null;

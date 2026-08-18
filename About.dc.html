@@ -49,7 +49,11 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
      overflow-x uses clip rather than hidden on purpose: hidden would make the
      body a scroll container and break the sticky positioning the dock and top
      bar rely on. */
-  @media (max-width: 820px) {
+  /* Also match any touch device regardless of width: a phone in landscape is
+   ~852px wide, which would otherwise restore the desktop sidebar - and that
+   sidebar expands on mouseenter, which never fires on touch, so it collapses
+   to an unreachable 18px strip after 10s. Catches tablets for the same reason. */
+  @media (max-width: 820px), (hover: none) and (pointer: coarse) {
     aside { display: none !important; }
     body { overflow-x: clip; }
   }

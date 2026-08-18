@@ -13,8 +13,11 @@
   if (window.__MOBILE_CHROME__) return;
   window.__MOBILE_CHROME__ = true;
 
-  // Keep in sync with the `@media (max-width: 820px)` block in each page.
-  var BREAKPOINT = 820;
+  // Keep in sync with the media query in each page's stylesheet and with DEFER
+  // in hologram-stage.js. The touch clause matters because a phone in landscape
+  // is ~852px wide, which would otherwise fall back to the desktop sidebar --
+  // and that sidebar only opens on mouseenter, so on touch it is unreachable.
+  var MEDIA = '@media (max-width: 820px), (hover: none) and (pointer: coarse)';
 
   // `page` is the lowercased filename this tab marks as active; contact is a
   // section of the home page rather than a page of its own, so it has none.
@@ -48,7 +51,7 @@
   function css() {
     return '' +
       '.mc-bar, .mc-dock { display: none; }' +
-      '@media (max-width: ' + BREAKPOINT + 'px) {' +
+      MEDIA + ' {' +
       '  .mc-bar {' +
       '    display: flex; align-items: center; justify-content: space-between; gap: 12px;' +
       '    position: sticky; top: 0; z-index: 60; padding: 9px 14px;' +
@@ -88,6 +91,17 @@
       // and the brand block already goes home, so it is redundant here. Not
       // scoped to <main>: Work Experience.dc.html has no <main> wrapper.
       '  a[href$="Portfolio.dc.html"] { display: none !important; }' +
+      '}' +
+      // A landscape phone is only ~390px tall. The section padding clamps are
+      // width-based, so at 852px wide they still resolve to the full desktop
+      // 96px, and the 3D tap target takes another 172px - between them the
+      // hero lands under the dock. Compress both when the viewport is short.
+      '@media (max-height: 520px) and (orientation: landscape) {' +
+      '  holo-stage { height: 104px !important; }' +
+      '  section { padding-top: 40px !important; padding-bottom: 48px !important; }' +
+      '  .mc-bar { padding: 6px 14px; }' +
+      '  .mc-tab { min-height: 44px; }' +
+      '  body { padding-bottom: calc(44px + env(safe-area-inset-bottom)) !important; }' +
       '}';
   }
 
