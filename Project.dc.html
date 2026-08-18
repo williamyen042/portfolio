@@ -63,6 +63,14 @@
     .pcard { flex-direction: column; }
     .pcard-text { padding: 30px 22px !important; }
     .pcard-shots { min-height: 210px !important; border-left: none !important; border-top: 1px solid #1a1a1e; }
+
+    /* Detail-page two-column rows: the fixed 200px/230px flex bases leave a
+       ragged half-empty column once the sibling wraps at phone widths, and the
+       56px/28px gaps read as dead space. Give each part the full width. */
+    .dt-split { gap: 26px !important; }
+    .dt-aside { flex: 1 1 100% !important; }
+    .dt-row { gap: 4px !important; }
+    .dt-key { flex: 1 1 100% !important; }
   }
 </style>
 </helmet>
@@ -92,10 +100,10 @@
   </sc-if>
 
   <sc-if value="{{ showIndex }}" hint-placeholder-val="{{ true }}">
-  <div style="padding: 112px 48px 140px; text-align: center;">
+  <div style="padding: clamp(64px, 14vw, 112px) clamp(20px, 5vw, 48px) clamp(72px, 16vw, 140px); text-align: center;">
     <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
       <div style="display: inline-block; background: #e04a2e; padding: 6px 14px 7px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 13px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 18px;">02 · projects</div>
-      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 46px; margin: 0 0 12px; letter-spacing: -0.01em;">what i've built</h1>
+      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: clamp(28px, 7vw, 46px); margin: 0 0 12px; letter-spacing: -0.01em;">what i've built</h1>
       <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 16px; color: #8a8a92; margin: 0 0 64px;">every project, start to ship.</p>
 
       <div style="width: 100%; display: flex; flex-direction: column; gap: 28px;">
@@ -107,7 +115,7 @@
                 <sc-if value="{{ p.logo }}" hint-placeholder-val="{{ false }}">
                   <img src="{{ p.logo }}" alt="{{ p.titleLower }} logo" style="width: 32px; height: 32px; object-fit: contain; display: block;">
                 </sc-if>
-                <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 34px; letter-spacing: -0.01em;">{{ p.titleLower }}</div>
+                <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: clamp(24px, 5.5vw, 34px); letter-spacing: -0.01em;">{{ p.titleLower }}</div>
               </div>
               <p style="font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.75; color: #8a8a92; margin: 0 0 30px; text-wrap: pretty;">{{ p.desc }}</p>
               <div class="pbtn" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #e04a2e; border: 1px solid #2a2a30; padding: 12px 24px; letter-spacing: 0.04em; white-space: nowrap; margin-top: auto;">read more →</div>
@@ -133,13 +141,13 @@
   </sc-if>
 
   <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
-  <div style="padding: 112px 48px 140px; text-align: center;">
+  <div style="padding: clamp(64px, 14vw, 112px) clamp(20px, 5vw, 48px) clamp(72px, 16vw, 140px); text-align: center;">
     <div style="max-width: 940px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
       <a href="Project.dc.html" onClick="{{ goProjects }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 13px; color: #e04a2e; margin-bottom: 24px; cursor: pointer;">← all projects</a>
       <sc-if value="{{ project.logo }}" hint-placeholder-val="{{ false }}">
         <img src="{{ project.logo }}" alt="{{ project.titleLower }} logo" style="width: 72px; height: 72px; object-fit: contain; display: block; margin-bottom: 20px;">
       </sc-if>
-      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 52px; margin: 0 0 16px; letter-spacing: -0.01em;">{{ project.titleLower }}</h1>
+      <h1 style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: clamp(30px, 8vw, 52px); margin: 0 0 16px; letter-spacing: -0.01em;">{{ project.titleLower }}</h1>
 
       <p style="font-family: 'Courier Prime', monospace; font-size: 16px; line-height: 1.75; color: #8a8a92; margin: 0 auto; max-width: 620px; text-wrap: pretty;">{{ project.desc }}</p>
 
@@ -168,8 +176,8 @@
       </sc-if>
 
       <sc-if value="{{ project.hasFeatures }}" hint-placeholder-val="{{ false }}">
-        <div style="width: 100%; margin-top: 72px; padding-top: 44px; border-top: 1px solid #1a1a1e; display: flex; gap: 56px; text-align: left; flex-wrap: wrap;">
-          <div style="flex: 0 0 200px;">
+        <div class="dt-split" style="width: 100%; margin-top: 72px; padding-top: 44px; border-top: 1px solid #1a1a1e; display: flex; gap: 56px; text-align: left; flex-wrap: wrap;">
+          <div class="dt-aside" style="flex: 0 0 200px;">
             <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 26px;">WHAT IT DOES</div>
             <div style="display: flex; flex-direction: column; gap: 18px;">
               <sc-for list="{{ project.facts }}" as="f" hint-placeholder-count="3">
@@ -196,8 +204,8 @@
           <div style="font-family: 'Courier Prime', monospace; font-size: 12px; color: #4a4a52; letter-spacing: 0.16em; margin-bottom: 26px;">TECH STACK</div>
           <div style="display: flex; flex-direction: column;">
             <sc-for list="{{ project.stackDetail }}" as="t" hint-placeholder-count="6">
-              <div style="display: flex; gap: 28px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid #141418; flex-wrap: wrap;">
-                <div style="flex: 0 0 230px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 15px; color: #e8e6e1;">{{ t.name }}</div>
+              <div class="dt-row" style="display: flex; gap: 28px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid #141418; flex-wrap: wrap;">
+                <div class="dt-key" style="flex: 0 0 230px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 15px; color: #e8e6e1;">{{ t.name }}</div>
                 <div style="flex: 1 1 300px; font-family: 'Courier Prime', monospace; font-size: 14px; line-height: 1.7; color: #8a8a92; text-wrap: pretty;">{{ t.desc }}</div>
               </div>
             </sc-for>
