@@ -42,10 +42,10 @@
     var p = new Intl.DateTimeFormat('en-US', {
       month: '2-digit', day: '2-digit', year: 'numeric',
       hour: '2-digit', minute: '2-digit', hour12: true,
-      timeZone: 'America/Los_Angeles'
+      timeZone: 'America/Chicago'
     }).formatToParts(new Date()).reduce(function (a, x) { a[x.type] = x.value; return a; }, {});
     return p.month + '/' + p.day + '/' + p.year + '  ' +
-           p.hour + ':' + p.minute + (p.dayPeriod || '').toLowerCase() + ' SF';
+           p.hour + ':' + p.minute + (p.dayPeriod || '').toLowerCase() + ' AUSTIN';
   }
 
   function css() {

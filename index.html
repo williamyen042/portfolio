@@ -429,7 +429,6 @@ problems worth automating</p>
         <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 26px; line-height: 1.35; color: #e8e6e1; margin: 24px 0 0; text-wrap: balance;">
           let's build <span style="color: #e04a2e; font-weight: 700;"></span>
         </p>
-        <p style="font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 1.65; color: #8a8a92; margin: 8px 0 0; max-width: 440px;">open to interesting problems, unusual collaborations, and short conversations that turn into long ones.</p>
 
         <a href="mailto:hello@williamyen.dev" style="margin-top: 32px; font-family: 'Courier Prime', monospace; font-style: italic; font-weight: 700; font-size: 22px; color: #e04a2e; border-bottom: 1px solid #e04a2e; padding-bottom: 2px;">williamyen042@gmail.com<br></a>
 
@@ -445,7 +444,7 @@ problems worth automating</p>
 
         <div style="margin-top: 96px; padding-top: 24px; border-top: 1px solid #1a1a1e; width: 100%; display: flex; justify-content: space-between; font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.05em;">
           <span>© 2026 wm.yen</span>
-          <span style="font-style: italic;">designed &amp; built in sf</span>
+          <span style="font-style: italic;">designed &amp; built in austin</span>
           <span>v.02.2026</span>
         </div>
       </div>
@@ -461,7 +460,7 @@ problems worth automating</p>
           </sc-if>
         </sc-for>
       </div>
-      <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.05em;">© 2026 wm.yen · designed &amp; built in sf</div>
+      <div style="font-family: 'Courier Prime', monospace; font-size: 11px; color: #4a4a52; letter-spacing: 0.05em;">© 2026 wm.yen · designed &amp; built in austin</div>
     </footer>
 
   </main>
@@ -632,11 +631,11 @@ class Component extends DCLogic {
 
   renderVals() {
     const now = this.state.now;
-    const timeStr = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Los_Angeles' }).format(now);
-    const dateStr = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Los_Angeles' }).format(now).toUpperCase();
-    // MM/DD/YYYY HH:MMxm SF  (Supreme-style stamp)
-    const parts = new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles' }).formatToParts(now).reduce((a, p) => (a[p.type] = p.value, a), {});
-    const stampLine = `${parts.month}/${parts.day}/${parts.year}  ${parts.hour}:${parts.minute}${(parts.dayPeriod || '').toLowerCase()} SF`;
+    const timeStr = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'America/Chicago' }).format(now);
+    const dateStr = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }).format(now).toUpperCase();
+    // MM/DD/YYYY HH:MMxm AUSTIN  (Supreme-style stamp)
+    const parts = new Intl.DateTimeFormat('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Chicago' }).formatToParts(now).reduce((a, p) => (a[p.type] = p.value, a), {});
+    const stampLine = `${parts.month}/${parts.day}/${parts.year}  ${parts.hour}:${parts.minute}${(parts.dayPeriod || '').toLowerCase()} AUSTIN`;
     const scrollTo = (id) => (e) => {
       e.preventDefault();
       const el = document.getElementById(id);
@@ -802,10 +801,8 @@ Component.PROJECTS = [
     shot: 'assets/syllasync-dark.png' },
   { slug: 'slack_searcher', titleLower: 'slack searcher', metaLine: '2026 · MCP SERVER · PYTHON · SQLITE · OPENAI · RAG',
     blurb: 'a slack search tool that answers only from real, cited messages — grounded rag over an mcp server, never a guess.', shot: 'assets/slack-searcher-mcp.png' },
-  { slug: 'halfstep', titleLower: 'halfstep', metaLine: '2025 · OPEN SOURCE · TYPESCRIPT · ROLLUP',
-    blurb: 'a tiny, type-checked query builder for typescript, used by ~3k developers on github.', shot: null },
-  { slug: 'cadence', titleLower: 'cadence', metaLine: '2024 · INTERNAL · NODE · SWIFT · KOTLIN',
-    blurb: 'a design-system runtime shipping tokens as code across web, ios and android in one build step.', shot: null },
+  { slug: 'passform', titleLower: 'passform', metaLine: '2026 · COMPUTER VISION · PYTHON · MEDIAPIPE · YOLOV8',
+    blurb: 'a side-view clip of a volleyball pass goes in; per-rep joint angles, the contact frame and coaching feedback come out — pose estimation and a fine-tuned detector, refereed by a physics filter.', shot: null },
 ];</script>
 </body>
 </html>

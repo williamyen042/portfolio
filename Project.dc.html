@@ -311,12 +311,36 @@ class Component extends DCLogic {
       ],
       keyTech: ['mcp (model context protocol)', 'rag / hybrid retrieval', 'bm25 + reciprocal rank fusion', 'sqlite', 'openai embeddings', 'python', 'next.js'],
       stack: ['python', 'fastmcp', 'openai', 'sqlite', 'bm25s', 'slack sdk', 'next.js', 'pytest'] },
-    halfstep: { titleLower: 'halfstep', metaLine: '2025 · open source · typescript · rollup',
-      desc: 'a tiny, type-checked query builder for typescript. loved by ~3k developers on github.',
-      stack: ['typescript', 'rollup'] },
-    cadence: { titleLower: 'cadence', metaLine: '2024 · internal · node · swift · kotlin',
-      desc: 'a design-system runtime shipping tokens as code across web, ios, and android in one build step.',
-      stack: ['node', 'swift', 'kotlin'] },
+    passform: { titleLower: 'passform', metaLine: '2026 · computer vision · python · mediapipe · yolov8',
+      desc: "a side-view clip of a volleyball pass goes in. per-rep joint angles, a contact frame, and coaching feedback come out. underneath it is pose estimation, a fine-tuned object detector, and a physics filter that decides which of the two to believe.\n7 core modules · 2,845 lines · 29 tests · 17 measurements per rep",
+      facts: [
+        { label: 'TYPE', value: 'cv pipeline' },
+        { label: 'ROLE', value: 'developer' },
+        { label: 'YEAR', value: '2026' },
+        { label: 'CORE MODULES', value: '7' },
+        { label: 'TESTS', value: '29 passing' },
+        { label: 'PER REP', value: '17 measurements' },
+      ],
+      features: [
+        { q: 'TWO SIGNALS, NEITHER TRUSTED', a: 'every frame yields two independent things: where the bodies are, and where small bright objects are. the bodies get resolved into people and roles; the bright things get filtered by whether they move like a thrown object. only after both have been vetted separately do the streams meet at a contact frame.' },
+        { q: 'IDENTITY BEFORE MEASUREMENT', a: 'mediapipe returns poses in arbitrary order, so pose[0] is not the same human between frames — measuring before resolving that would silently average two people together. poses are linked into per-person tracks by hip proximity, and roles are assigned to whole tracks rather than to individual frames.' },
+        { q: 'PHYSICS AS THE REFEREE', a: 'the detector proposes every small round thing and keeps all of them, because the real ball is frequently not the highest-confidence box. candidates are then linked by a constant-velocity gate and each track is kept or dropped on how well it fits y = y0 + v·t + ½at². a ceiling light does not follow a parabola.' },
+        { q: 'WHAT TESTING OVERTURNED', a: 'transplanting a different ball into 118 training images at identical position and size dropped detection from 118/118 to 12/118 — the failure is training domain, not architecture, so switching model families would change nothing. separately, the detector fires on ceiling lights, which really are warm blobs brighter than their surroundings; the physics gate is what separates them, at a fit residual of 0.004 versus 0.02.' },
+        { q: 'MEASUREMENTS THAT SURVIVE THE CAMERA', a: '17 measurements over two windows around contact — a wide one for posture, a tight one for motion through contact — each normalized by shoulder width or torso length so a change of camera distance does not change the score. pose precision degrades gracefully: 0.4° of elbow error at 283px tall, against scoring bands 15–20° wide.' },
+        { q: 'RAW AND SCORED, KEPT APART', a: 'each rep stores raw measurements separately from the scores derived from them, so the scoring can be replaced without re-processing any video. that matters because the thresholds are hand-tuned and unvalidated — they are the part most likely to be wrong.' },
+      ],
+      stackDetail: [
+        { name: 'mediapipe 0.10.33', desc: 'pose landmarker (tasks api), heavy model, 33 landmarks per person, run in video mode so tracking carries between frames. the only pretrained component.' },
+        { name: 'ultralytics 8.4.48', desc: 'yolov8 fine-tuning and inference for the ball. agpl-3.0, which is fine here and would only need revisiting for a closed-source product.' },
+        { name: 'torch 2.11.0', desc: "ultralytics' backend. training targets apple silicon via mps — the first run silently went to cpu and took three hours." },
+        { name: 'opencv-python 4.13.0', desc: 'decode, rotation, resize, and the overlay drawing, plus the gui for the labelling tool.' },
+        { name: 'numpy 2.4.4', desc: 'every measurement, the smoothing, and the least-squares parabola fits.' },
+        { name: 'pillow 12.2.0', desc: "text rendering in the overlay, because opencv's built-in font is unreadable at these sizes." },
+        { name: 'unittest (stdlib)', desc: '29 tests, no fixtures and no plugins. no web framework, no database, no cloud inference — everything runs locally against a video file.' },
+      ],
+      keyTech: ['pose estimation', 'yolov8 fine-tuning', 'trajectory physics', 'multi-person tracking', 'opencv', 'python 3.13'],
+      stack: ['python 3.13', 'mediapipe', 'yolov8', 'pytorch', 'opencv', 'numpy', 'unittest'],
+      moreNote: 'next: boxing ~250 frames of the target gym\u2019s ball plus 100 hard negatives to unblock detection there, then per-rep feature vectors joined to hand-labelled outcomes — a rule-based baseline against a learned model.' },
   };
   componentDidMount() {
     requestAnimationFrame(() => setTimeout(() => this.setState({ loaded: true }), 30));
@@ -393,7 +417,9 @@ class Component extends DCLogic {
         hasStackDetail: !!(project.stackDetail && project.stackDetail.length),
         hasKeyTech: !!(project.keyTech && project.keyTech.length),
         facts: project.facts || [],
-        moreNote: project.features ? '' : 'full case study \u2014 architecture notes, metrics, and links \u2014 coming soon.',
+        // An explicit moreNote wins: a project can have full features and still
+        // have something to say after them (passform's next steps).
+        moreNote: project.moreNote || (project.features ? '' : 'full case study \u2014 architecture notes, metrics, and links \u2014 coming soon.'),
       },
       sidebarVisible: this.state.sidebarVisible,
       sidebarWidth: this.state.collapsed ? 18 : 240,
