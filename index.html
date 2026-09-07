@@ -80,6 +80,13 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
     .bento6 > * { grid-column: span 1 !important; grid-row: span 1 !important; }
     .bento4 { grid-template-columns: 1fr; }
   }
+  .exprow { display: grid; grid-template-columns: 190px minmax(0,1fr); gap: 36px;
+           padding: 30px 0; border-top: 1px solid #1a1a1e; text-align: left; cursor: pointer;
+           transition: border-color 0.25s ease; }
+  .exprow:hover { border-color: #2a2a30; }
+  @media (max-width: 720px) {
+    .exprow { grid-template-columns: minmax(0,1fr); gap: 10px; }
+  }
   .proj-title { line-height: 1.15; }
   .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16,1,0.3,1); }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
@@ -88,8 +95,8 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
   .read-more { position: relative; display: inline-block; color: #e04a2e; background-image: linear-gradient(115deg, #e04a2e 35%, #fff 50%, #e04a2e 65%); background-size: 300% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; }
   .read-more:hover { animation: glossText 1.5s ease-in-out infinite; -webkit-text-fill-color: transparent; }
   @keyframes glossText { 0% { background-position: 140% 0; } 100% { background-position: -140% 0; } }
-  .abento { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 14px; max-width: 880px; margin: 64px auto 0; text-align: left; }
-  .a-tile { position: relative; overflow: hidden; background: #131317; border: 1px solid #1e1e24; padding: 22px; transition: border-color 0.3s ease, background 0.3s ease; }
+  .abento { display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 20px; max-width: 1080px; margin: 72px auto 0; text-align: left; }
+  .a-tile { position: relative; overflow: hidden; background: #131317; border: 1px solid #1e1e24; padding: 30px; transition: border-color 0.3s ease, background 0.3s ease; }
   .a-tile::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.4s ease; background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(224,74,46,0.16), rgba(224,74,46,0.05) 45%, transparent 72%); }
   .a-tile:hover::before { opacity: 1; }
   .a-tile:hover { border-color: #2b2b33; background: #15151a; }
@@ -176,12 +183,12 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
 
     <!-- ABOUT -->
     <section id="about" style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px); text-align: center;">
-      <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 24px; position: relative">
+      <div style="max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 24px; position: relative">
         <x-import component-from-global-scope="holo-stage" from="./hologram-stage.js" height="440px" max-width="600px" margin="-30px auto -20px" hint-size="100%,440px"></x-import>
 
-        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 22px; line-height: 1.45; margin: 24px 0 0; color: #E8E6E1; text-wrap: balance; margin-top: 30px; view-transition-name: hero-title;">{{ typedLine }}<span class="type-cursor"></span></p>
+        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: clamp(32px, 5.6vw, 60px); line-height: 1.12; letter-spacing: -0.02em; margin: 24px 0 0; color: #E8E6E1; text-wrap: balance; margin-top: 30px; view-transition-name: hero-title;">{{ typedLine }}<span class="type-cursor"></span></p>
 
-        <p style="margin: 0; max-width: 316px; width: 100%; height: 14px; color: #E8E3E1B0; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); view-transition-name: hero-subtitle;">i build <b>ai tools</b> for
+        <p style="margin: 0; max-width: 480px; width: 100%; font-size: 15px; line-height: 1.6; color: #E8E3E1B0; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); view-transition-name: hero-subtitle;">i build <b>ai tools</b> for
 problems worth automating</p>
 
         <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #1a1a1e; display: flex; align-items: center; gap: 10px; flex-direction: column">
@@ -203,11 +210,11 @@ problems worth automating</p>
           </a>
         </div>
         <a href="About.dc.html" onClick="{{ goAbout }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; margin-top: 24px; cursor: pointer; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.24s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.24s;">read more about me +</a>
-      <div class="holo-note" style="font-size: 11px; line-height: 1; font-family: 'Courier Prime', monospace; position: absolute; left: 6px; top: 381px; color: #E8E6E1A9; display: flex; align-items: flex-end; gap: 2px;">(based on ekko's&nbsp;<span style="position: relative;">anomaly</span>&nbsp;boon in tft)</div><svg class="holo-note" width="22" height="20" viewBox="0 0 26 24" fill="none" stroke="#E8E6E198" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 146px; transform: translateX(-50%); margin-bottom: 3px; overflow: visible; top: 329px; stroke: #E8E6E176"><path d="M4 22C3.2 12.4 8.4 5.2 20 3"></path><path d="M14.4 1.2 20.8 3 19 9.4"></path></svg></div>
+      <div class="holo-note" style="font-size: 11px; line-height: 1; font-family: 'Courier Prime', monospace; position: absolute; left: calc(50% - 314px); top: 381px; color: #E8E6E1A9; display: flex; align-items: flex-end; gap: 2px;">(based on ekko's&nbsp;<span style="position: relative;">anomaly</span>&nbsp;boon in tft)</div><svg class="holo-note" width="22" height="20" viewBox="0 0 26 24" fill="none" stroke="#E8E6E198" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: calc(50% - 174px); transform: translateX(-50%); margin-bottom: 3px; overflow: visible; top: 329px; stroke: #E8E6E176"><path d="M4 22C3.2 12.4 8.4 5.2 20 3"></path><path d="M14.4 1.2 20.8 3 19 9.4"></path></svg></div>
 
       <div class="abento reveal">
         <!-- what inspires me (tall) -->
-        <div class="a-tile at-a" style="grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 260px;">
+        <div class="a-tile at-a" style="grid-column: span 2; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-height: 320px;">
           <div style="position: relative; z-index: 1;">
             <div style="font-family: 'Courier Prime', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6b70; margin-bottom: 18px">WHAT INSPIRES ME?</div>
             <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 28px; line-height: 1.25; color: #e8e6e1; letter-spacing: -0.01em; text-wrap: balance;">building solutions to <span style="color: #e04a2e;">real world problems</span>.</div>
@@ -226,7 +233,7 @@ problems worth automating</p>
         </div>
 
         <!-- based in -->
-        <div class="a-tile at-b" style="grid-column: span 3; display: flex; flex-direction: column; gap: 22px;">
+        <div class="a-tile at-b" style="grid-column: span 2; display: flex; flex-direction: column; gap: 22px;">
           <div style="position: relative; z-index: 1;">
             <div style="font-family: 'Courier Prime', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6b70; margin-bottom: 10px">LOCATED IN</div>
             <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 22px; color: #e8e6e1;">austin, tx</div>
@@ -239,7 +246,7 @@ problems worth automating</p>
         </div>
 
         <!-- i also like -->
-        <div class="a-tile at-c" style="grid-column: span 3; display: flex; flex-direction: column; gap: 16px;">
+        <div class="a-tile at-c" style="grid-column: span 2; display: flex; flex-direction: column; gap: 16px;">
           <div style="position: relative; z-index: 1; font-family: 'Courier Prime', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6b70">i also like…</div>
           <div style="position: relative; z-index: 1; border: 1px solid #1e1e24; background: #0d0d10;">
             <div style="display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid #1a1a1e;">
@@ -268,7 +275,7 @@ problems worth automating</p>
         </div>
 
         <!-- focus -->
-        <div class="a-tile at-d" style="grid-column: span 3; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; min-height: 152px;">
+        <div class="a-tile at-d" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-height: 184px;">
           <div class="marquee-wrap" style="position: relative; z-index: 1; width: 100%; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent); mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);">
             <div class="marquee-track" style="display: flex; gap: 26px; width: max-content; align-items: center; animation: marquee 24s linear infinite; padding: 4px 0;">
               <sc-for list="{{ focusTools }}" as="t" hint-placeholder-count="16">
@@ -290,7 +297,7 @@ problems worth automating</p>
         </div>
 
         <!-- now playing -->
-        <div class="a-tile at-f" style="grid-column: span 3; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;">
+        <div class="a-tile at-f" style="grid-column: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: 20px;">
           <div style="position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
             <div style="font-family: 'Courier Prime', monospace; font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #6b6b70">CURRENTLY PLAYING</div>
             <div style="display: flex; align-items: flex-end; gap: 2px; height: 12px;">
@@ -383,18 +390,25 @@ problems worth automating</p>
     </section>
 
     <!-- EXPERIENCE -->
-    <section id="experience" class="reveal" style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px); text-align: center;">
-      <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-        <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">03 · work experience</div>
-        <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0 0 56px;">a short, honest track record.</p>
+    <section id="experience" class="reveal" style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px);">
+      <div style="max-width: 1080px; margin: 0 auto;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 44px;">
+          <div>
+            <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">03 · work experience</div>
+            <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0;">a short, honest track record.</p>
+          </div>
+          <a href="Work%20Experience.dc.html" onClick="{{ goWork }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; cursor: pointer;">full history →</a>
+        </div>
 
-        <div style="width: 100%; display: flex; flex-direction: column; gap: 40px;">
+        <div style="display: flex; flex-direction: column;">
           <sc-for list="{{ experiences }}" as="e" hint-placeholder-count="3">
-            <div style="text-align: center;">
-              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-size: 12px; color: #e04a2e; letter-spacing: 0.05em; margin-bottom: 8px;">{{ e.range }}</div>
-              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 18px; color: #e8e6e1; margin-bottom: 6px;">{{ e.roleLine }}</div>
-              <p style="font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 1.6; color: #8a8a92; margin: 0 auto; max-width: 440px;">{{ e.desc }}</p>
-              <div class="read-more" onClick="{{ goWork }}" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 11px; margin-top: 10px; letter-spacing: 0.05em; cursor: pointer;">read more +</div>
+            <div class="exprow" onClick="{{ goWork }}">
+              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-size: 12px; color: #e04a2e; letter-spacing: 0.05em; padding-top: 3px;">{{ e.range }}</div>
+              <div style="min-width: 0;">
+                <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 18px; color: #e8e6e1; margin-bottom: 8px;">{{ e.roleLine }}</div>
+                <p style="font-family: 'Courier Prime', monospace; font-size: 13px; line-height: 1.7; color: #8a8a92; margin: 0; max-width: 620px; text-wrap: pretty;">{{ e.desc }}</p>
+                <div class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 11px; margin-top: 12px; letter-spacing: 0.05em;">read more +</div>
+              </div>
             </div>
           </sc-for>
         </div>
@@ -402,15 +416,15 @@ problems worth automating</p>
     </section>
 
     <!-- SKILLS -->
-    <section id="skills" class="reveal" style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px); text-align: center;">
-      <div style="max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+    <section id="skills" class="reveal" style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px);">
+      <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; align-items: flex-start;">
         <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">tech stack + toolkit</div>
         
 
         <div style="display: flex; flex-direction: column; gap: 36px; width: 100%;">
           <sc-for list="{{ skillRows }}" as="row" hint-placeholder-count="0">
             <div>
-              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; color: #e04a2e; font-size: 12px; letter-spacing: 0.02em; margin-bottom: 16px; text-align: center;">{{ row.labelLower }} /</div>
+              <div style="font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; color: #e04a2e; font-size: 12px; letter-spacing: 0.02em; margin-bottom: 16px; text-align: left;">{{ row.labelLower }} /</div>
               <div class="marquee-wrap" style="width: 100%; overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent); mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);">
                 <div class="marquee-track" style="display: flex; gap: 10px; width: max-content; animation: marquee {{ row.duration }}s linear infinite;">
                   <sc-for list="{{ row.items }}" as="s" hint-placeholder-count="0">
@@ -796,7 +810,13 @@ class Component extends DCLogic {
           { name: 'openclaw', icon: null, customIcon: 'assets/icon-openclaw.png' },
           { name: 'cursor', icon: 'cursor' },
         ] },
-      ].map((row) => ({ ...row, items: [...row.items, ...row.items] })),
+      ].map((row) => ({
+        ...row,
+        // The marquee loops by translating -50%, so one half of the track must be
+        // at least as wide as the container or the seam becomes visible. At the old
+        // 560px that held with a single duplicate; at 1080px it does not.
+        items: Array.from({ length: 6 }, () => row.items).flat(),
+      })),
       onSubmit: (e) => { e.preventDefault(); },
     };
   }

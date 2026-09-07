@@ -63,7 +63,10 @@
         '#hologram-stage.is-loaded .holo-loader{opacity:0;}' +
         '#hologram-stage.has-error #hologram-status{color:#e04a2e;}' +
         '#hologram-stage{cursor:grab;touch-action:none;}' +
-        '#hologram-stage:active{cursor:grabbing;}';
+        '#hologram-stage:active{cursor:grabbing;}' +
+        '@keyframes holoNudge{0%,100%{transform:translateX(-3px)}50%{transform:translateX(3px)}}' +
+        '.holo-hint svg{animation:holoNudge 1.9s ease-in-out infinite;}' +
+        '@media (prefers-reduced-motion: reduce){.holo-hint svg{animation:none;}}';
       loader.className = 'holo-loader';
 
       stage.appendChild(loader);
@@ -72,6 +75,42 @@
       stage.appendChild(fade);
       this.appendChild(style);
       this.appendChild(stage);
+
+      // Until now the only affordance for dragging was cursor:grab, which you
+      // cannot see without already hovering the model - so most visitors never
+      // learn it spins. Show an explicit hint once the scene is actually up, and
+      // retire it permanently the moment they drag. Lives on the host, not on
+      // #hologram-stage, because that element is radially masked and would fade
+      // the label out at the bottom edge.
+      const hint = document.createElement('div');
+      hint.className = 'holo-hint';
+      hint.innerHTML =
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+        'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M3 12h4"/><path d="M5 10l-2 2 2 2"/>' +
+        '<path d="M21 12h-4"/><path d="M19 10l2 2-2 2"/>' +
+        '<circle cx="12" cy="12" r="3.2"/></svg>' +
+        '<span>drag to rotate</span>';
+      hint.style.cssText = 'position:absolute;left:50%;bottom:0;transform:translateX(-50%);' +
+        'display:flex;align-items:center;gap:7px;pointer-events:none;white-space:nowrap;' +
+        "font-family:'Courier Prime',ui-monospace,monospace;font-size:11px;letter-spacing:.07em;" +
+        'color:#8a8a92;opacity:0;transition:opacity .7s ease;';
+      this.appendChild(hint);
+
+      const showHint = () => { hint.style.opacity = '1'; };
+      if (stage.classList.contains('is-loaded')) showHint();
+      else {
+        const mo = new MutationObserver(() => {
+          if (stage.classList.contains('is-loaded')) { mo.disconnect(); showHint(); }
+        });
+        mo.observe(stage, { attributes: true, attributeFilter: ['class'] });
+      }
+      // Capture phase: the scene also binds pointerdown on this element, and we
+      // want the hint retired regardless of what it does with the event.
+      stage.addEventListener('pointerdown', () => {
+        hint.style.opacity = '0';
+        setTimeout(() => hint.remove(), 800);
+      }, { once: true, capture: true });
 
       // Defer the (heavy) bundle until the stage is on screen.
       const boot = () => {
