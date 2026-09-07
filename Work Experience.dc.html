@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+  /* ---- cross-document view transitions --------------------------------
+     Keep this in the document head, NOT in the x-dc helmet block: helmet CSS is
+     moved into the document by the framework at runtime, which lands after the
+     browser has already decided whether to run a transition, so the rule was
+     never seen in time and every navigation hard-cut. Both the outgoing and the
+     incoming document need it parsed before first render.
+     Never write tag names in angle brackets in this file's comments: support.js
+     rewrites helmet tags with a regex over the raw HTML (see its ~line 377) and
+     happily matches them inside a CSS comment, which blanks the whole page. */
+  @view-transition { navigation: auto; }
+  /* Applied by class, not inline: the DC runtime re-serialises inline style
+     attributes when it renders a component and silently drops
+     view-transition-name in the process, so an inline declaration survives on
+     index.html but vanishes on the subpages. A stylesheet rule is untouched. */
+  .vt-shell { view-transition-name: site-shell; }
+  .vt-badge-projects { view-transition-name: section-badge-projects; }
+  .vt-badge-work { view-transition-name: section-badge-work; }
+  /* Staggered, not simultaneous. These pages render client-side, so the shared
+     names never pair up and the browser falls back to crossfading two entire
+     pages on top of each other - you saw both copies of the hero at once, at
+     different sizes and positions. Fading the old one fully out BEFORE the new
+     one comes in removes the double image entirely. */
+  @keyframes vt-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes vt-in { from { opacity: 0; } to { opacity: 1; } }
+  ::view-transition-group(*) { animation-duration: 400ms; animation-timing-function: cubic-bezier(0.2,0.7,0.2,1); }
+  ::view-transition-old(*) { animation: vt-out 170ms cubic-bezier(0.4,0,1,1) both; }
+  ::view-transition-new(*) { animation: vt-in 230ms cubic-bezier(0,0,0.2,1) 170ms both; }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 1ms; }
+  }
+</style>
+<script>
+window.addEventListener('unhandledrejection', (e) => {
+  if (String(e.reason).includes('Transition was skipped')) e.preventDefault();
+});
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
@@ -39,11 +76,11 @@
 </style>
 </helmet>
 <div style="min-height: 100vh;">
-  <a href="Portfolio.dc.html" onClick="{{ goHome }}" style="position: fixed; top: 24px; left: 24px; font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; color: #6b6b70; letter-spacing: 0.05em; cursor: pointer;">← back to home</a>
+  <a href="index.html" onClick="{{ goHome }}" style="position: fixed; top: 24px; left: 24px; font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; color: #6b6b70; letter-spacing: 0.05em; cursor: pointer;">← back to home</a>
 
   <div style="padding: clamp(56px, 12vw, 96px) 24px clamp(64px, 14vw, 120px); text-align: center;">
     <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
-      <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);">03 · work experience</div>
+      <div class="vt-badge-work" style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);">03 · work experience</div>
       <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0 0 56px; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.08s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.08s;">a short, honest track record.</p>
 
       <div style="width: 100%; display: flex; flex-direction: column; gap: 40px; opacity: {{ heroOpacity }}; transform: {{ heroTransform }}; transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1) 0.16s, transform 0.7s cubic-bezier(0.16,1,0.3,1) 0.16s;">
@@ -74,9 +111,12 @@ class Component extends DCLogic {
   }
   goHome(e) {
     e.preventDefault();
+    // Portfolio.dc.html is only a redirect stub; routing through it is a second
+    // navigation, which cancels the transition. Go to index.html directly.
+    if ('onpagereveal' in window) { window.location.href = 'index.html'; return; }
     this.setState({ loaded: false });
     clearTimeout(this._navTimer);
-    this._navTimer = setTimeout(() => { window.location.href = 'Portfolio.dc.html'; }, 360);
+    this._navTimer = setTimeout(() => { window.location.href = 'index.html'; }, 360);
   }
   toggleExp(i) {
     this.setState((s) => ({ expandedExp: { ...s.expandedExp, [i]: !s.expandedExp[i] } }));

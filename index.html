@@ -1,16 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+  /* ---- cross-document view transitions --------------------------------
+     Keep this in the document head, NOT in the x-dc helmet block: helmet CSS is
+     moved into the document by the framework at runtime, which lands after the
+     browser has already decided whether to run a transition, so the rule was
+     never seen in time and every navigation hard-cut. Both the outgoing and the
+     incoming document need it parsed before first render.
+     Never write tag names in angle brackets in this file's comments: support.js
+     rewrites helmet tags with a regex over the raw HTML (see its ~line 377) and
+     happily matches them inside a CSS comment, which blanks the whole page. */
+  @view-transition { navigation: auto; }
+  /* Applied by class, not inline: the DC runtime re-serialises inline style
+     attributes when it renders a component and silently drops
+     view-transition-name in the process, so an inline declaration survives on
+     index.html but vanishes on the subpages. A stylesheet rule is untouched. */
+  .vt-shell { view-transition-name: site-shell; }
+  .vt-badge-projects { view-transition-name: section-badge-projects; }
+  .vt-badge-work { view-transition-name: section-badge-work; }
+  /* Staggered, not simultaneous. These pages render client-side, so the shared
+     names never pair up and the browser falls back to crossfading two entire
+     pages on top of each other - you saw both copies of the hero at once, at
+     different sizes and positions. Fading the old one fully out BEFORE the new
+     one comes in removes the double image entirely. */
+  @keyframes vt-out { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes vt-in { from { opacity: 0; } to { opacity: 1; } }
+  ::view-transition-group(*) { animation-duration: 400ms; animation-timing-function: cubic-bezier(0.2,0.7,0.2,1); }
+  ::view-transition-old(*) { animation: vt-out 170ms cubic-bezier(0.4,0,1,1) both; }
+  ::view-transition-new(*) { animation: vt-in 230ms cubic-bezier(0,0,0.2,1) 170ms both; }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*), ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 1ms; }
+  }
+</style>
 <script>
 window.addEventListener('unhandledrejection', (e) => {
   if (String(e.reason).includes('Transition was skipped')) e.preventDefault();
 });
-function __injectVT() {
-  const s = document.createElement('style');
-  s.textContent = '@view-transition { navigation: auto; }';
-  document.head.appendChild(s);
-}
-if (document.readyState === 'complete') { __injectVT(); } else { window.addEventListener('load', __injectVT); }
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -144,7 +170,7 @@ if (document.readyState === 'complete') { __injectVT(); } else { window.addEvent
 <div style="display: flex; min-height: 100vh; background: #0a0a0c; position: relative;">
 
   <!-- SIDEBAR (dark, centered / manifesto-style) -->
-  <aside onMouseEnter="{{ onSidebarEnter }}" onMouseLeave="{{ onSidebarLeave }}" style="width: {{ sidebarWidth }}px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0a0a0c; color: #e8e6e1; font-family: 'Courier Prime', 'Courier New', monospace; transition: width 0.45s cubic-bezier(0.2,0.7,0.2,1);">
+  <aside class="vt-shell" onMouseEnter="{{ onSidebarEnter }}" onMouseLeave="{{ onSidebarLeave }}" style="width: {{ sidebarWidth }}px; flex-shrink: 0; position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0a0a0c; color: #e8e6e1; font-family: 'Courier Prime', 'Courier New', monospace; transition: width 0.45s cubic-bezier(0.2,0.7,0.2,1);">
     <div style="width: 240px; height: 100%; padding: 48px 24px 32px; display: flex; flex-direction: column; align-items: center; opacity: {{ sidebarContentOpacity }}; transition: opacity 0.25s ease;">
       <!-- Brand block -->
       <div style="display: inline-block; background: #e04a2e; padding: 8px 16px 10px; margin-bottom: 14px;">
@@ -320,7 +346,7 @@ problems worth automating</p>
       <div style="max-width: 1080px; margin: 0 auto;">
         <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 44px;">
           <div>
-            <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">02 · projects</div>
+            <div class="vt-badge-projects" style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">02 · projects</div>
             <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0;"><br></p>
           </div>
           <a href="Project.dc.html" onClick="{{ goProjects }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; cursor: pointer;">view all projects →</a>
@@ -394,7 +420,7 @@ problems worth automating</p>
       <div style="max-width: 1080px; margin: 0 auto;">
         <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 44px;">
           <div>
-            <div style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">03 · work experience</div>
+            <div class="vt-badge-work" style="display: inline-block; background: #e04a2e; padding: 5px 12px 6px; font-family: 'Courier Prime', monospace; font-weight: 700; font-style: italic; font-size: 12px; color: #ffffff; letter-spacing: 0.02em; margin-bottom: 12px;">03 · work experience</div>
             <p style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 14px; color: #8a8a92; margin: 0;">a short, honest track record.</p>
           </div>
           <a href="Work%20Experience.dc.html" onClick="{{ goWork }}" class="read-more" style="font-family: 'Courier Prime', monospace; font-style: italic; font-size: 12px; cursor: pointer;">full history →</a>
@@ -500,6 +526,11 @@ class Component extends DCLogic {
     .map((t) => (typeof t === 'string' ? { slug: t } : t));
   static TYPE_TEXT = "hi, i'm william.";
   navigate(url) {
+    // A cross-document view transition snapshots the page as it is at navigation
+    // time, so the old 360ms fade-out would capture the already-faded frame and
+    // the next page would grow out of nothing. Go straight across when the
+    // browser can transition; keep the fade as the fallback when it cannot.
+    if ('onpagereveal' in window) { window.location.href = url; return; }
     this.setState({ loaded: false });
     clearTimeout(this._navTimer);
     this._navTimer = setTimeout(() => { window.location.href = url; }, 360);
@@ -702,8 +733,8 @@ class Component extends DCLogic {
       goAbout: navigateSmooth('About.dc.html'),
       navItems: [
         { num: '01', label: 'ABOUT ME',        labelLower: 'about me',        href: 'About.dc.html',           onClick: navigateSidebarSmooth('About.dc.html') },
-        { num: '02', label: 'PROJECTS',        labelLower: 'projects',        href: 'Project.dc.html',         onClick: navigate('Project.dc.html') },
-        { num: '03', label: 'WORK EXPERIENCE', labelLower: 'work experience', href: 'Work%20Experience.dc.html', onClick: navigate('Work%20Experience.dc.html') },
+        { num: '02', label: 'PROJECTS',        labelLower: 'projects',        href: 'Project.dc.html',         onClick: navigateSidebar('Project.dc.html') },
+        { num: '03', label: 'WORK EXPERIENCE', labelLower: 'work experience', href: 'Work%20Experience.dc.html', onClick: navigateSidebar('Work%20Experience.dc.html') },
         { num: '04', label: 'CONTACT',          labelLower: 'contact',        href: '#contact',                onClick: scrollTo('contact') },
         // Stable filename on purpose: recruiters bookmark and forward this link,
         // so renaming the file turns into a 404 in someone's inbox weeks later.
