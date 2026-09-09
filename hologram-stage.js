@@ -66,6 +66,7 @@
         '#hologram-stage:active{cursor:grabbing;}' +
         '@keyframes holoNudge{0%,100%{transform:translateX(-3px)}50%{transform:translateX(3px)}}' +
         '.holo-hint svg{animation:holoNudge 1.9s ease-in-out infinite;}' +
+        '.holo-note{transition:opacity .7s ease;}' +
         '@media (prefers-reduced-motion: reduce){.holo-hint svg{animation:none;}}';
       loader.className = 'holo-loader';
 
@@ -91,6 +92,9 @@
         '<path d="M21 12h-4"/><path d="M19 10l2 2-2 2"/>' +
         '<circle cx="12" cy="12" r="3.2"/></svg>' +
         '<span>drag to rotate</span>';
+      // Right-aligned, not centred: the ekko caption sits at the model's lower
+      // left and its text runs to within ~4px of a centred hint, so the two read
+      // as one cramped cluster. Flanking the model gives each its own corner.
       hint.style.cssText = 'position:absolute;left:50%;bottom:0;transform:translateX(-50%);' +
         'display:flex;align-items:center;gap:7px;pointer-events:none;white-space:nowrap;' +
         "font-family:'Courier Prime',ui-monospace,monospace;font-size:11px;letter-spacing:.07em;" +
@@ -110,6 +114,10 @@
       stage.addEventListener('pointerdown', () => {
         hint.style.opacity = '0';
         setTimeout(() => hint.remove(), 800);
+        // The ekko caption lives in the page rather than this component, but it
+        // annotates the same model - once you are actually dragging, both notes
+        // have done their job, so they retire together.
+        document.querySelectorAll('.holo-note').forEach((n) => { n.style.opacity = '0'; });
       }, { once: true, capture: true });
 
       // Defer the (heavy) bundle until the stage is on screen.
